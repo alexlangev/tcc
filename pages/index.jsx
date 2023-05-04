@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { MountainHero, Layout, HiddenH1 } from "/components/";
+import { Bio, MountainHero, Layout, HiddenH1 } from "/components/";
 
 export default function Home() {
   return (
@@ -11,6 +11,8 @@ export default function Home() {
       <MountainHero>
         <Layout>
           <HiddenH1 />
+          <Bio />
+          <div>RecentPosts are here!</div>
         </Layout>
       </MountainHero>
     </>

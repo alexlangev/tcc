@@ -5,8 +5,10 @@ import Image from "next/image";
 import Logo from "public/images/logos/tcc-logo-2.svg";
 import Github from "public/images/icons/github-icon.svg";
 import Twitter from "public/images/icons/twitter-icon.svg";
-// import Yt from "../../public/assets/youtube-icon.svg";
+import Linkedin from "public/images/icons/linkedin-icon.svg";
+
 import { Boop } from "components";
+import { SocialLink } from "components";
 import { COLORS } from "utils/constants";
 
 export default function Footer() {
@@ -17,44 +19,30 @@ export default function Footer() {
           <Image src={Logo} width={250} alt={"The Coding Canuck"} />
         </Boop>
         <SocialBar>
-          <SocialItemWrapper>
-            <SocialLink
-              href={"https://github.com/alexlangev"}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Boop scale={1.1} rotation={-3}>
-                <InnerBoopWrapper>
-                  <Icon src={Github} width={32} alt={"Github"} />
-                  Github
-                </InnerBoopWrapper>
-              </Boop>
-            </SocialLink>
-          </SocialItemWrapper>
-          <SocialItemWrapper>
-            <SocialLink
-              href={"https://twitter.com/thecodingcanuck"}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Boop scale={1.1} rotation={3}>
-                <InnerBoopWrapper>
-                  <Icon src={Twitter} width={34} alt={"Twitter"} />
-                  Twitter
-                </InnerBoopWrapper>
-              </Boop>
-            </SocialLink>
-          </SocialItemWrapper>
-          {/* <SocialItemWrapper>
-            <SocialLink
-              href={"https://www.youtube.com/@thecodingcanuck"}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon src={Yt} width={38} alt={"Youtube"} />
-              Youtube
-            </SocialLink>
-          </SocialItemWrapper> */}
+          <SocialLink
+            linkHref={"https://twitter.com/thecodingcanuck"}
+            logoSrc={Twitter}
+            logoWidth={32}
+            logoAlt={"twitter"}
+          >
+            Twitter
+          </SocialLink>
+          <SocialLink
+            linkHref={"https://github.com/alexlangev"}
+            logoSrc={Github}
+            logoWidth={32}
+            logoAlt={"Github"}
+          >
+            Github
+          </SocialLink>
+          <SocialLink
+            linkHref={"https://www.linkedin.com/in/alexlangev/"}
+            logoSrc={Linkedin}
+            logoWidth={32}
+            logoAlt={"Linkedin"}
+          >
+            Twitter
+          </SocialLink>
         </SocialBar>
         <div>
           <span>{`© 2023 `}</span>
@@ -83,24 +71,6 @@ const SocialBar = styled.ul`
   width: fit-content;
   padding-bottom: 24px;
   padding-top: 24px;
-`;
-
-const SocialItemWrapper = styled.li`
-  padding: 0 10px;
-`;
-
-const SocialLink = styled.a`
-  display: flex;
-  align-items: center;
-  font-size: 1.2rem;
-`;
-
-const InnerBoopWrapper = styled.div`
-  display: flex;
-`;
-
-const Icon = styled(Image)`
-  padding-right: 5px;
 `;
 
 const WebsiteLink = styled(Link)`

@@ -101,7 +101,6 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 // ---------------------------------- My own styles ----------------------------------
-
 // ----------------- Resets -----------------
 
 // reset styles from ul, ol and li
@@ -126,6 +125,21 @@ a {
 body {
   background-color: ${COLORS.mainBg};
 }
+
+h1, h2, h3, h4, p, a, span, div, li, strong, em, td {
+  -webkit-font-smoothing: antialiased;
+  color: ${COLORS.main}
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+// ----------------- Math and code blocks -----------------
 `;
 
 export default GlobalStyle;

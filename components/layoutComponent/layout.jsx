@@ -5,10 +5,13 @@ export default function Layout({ children }) {
   return (
     <>
       <Wrapper>
-        <Navbar />
-        <main>
-          <MaxWidthWrapper>{children}</MaxWidthWrapper>
-        </main>
+        <div>
+          {/* div used so that space-between works between content and footer*/}
+          <Navbar />
+          <main>
+            <MaxWidthWrapper>{children}</MaxWidthWrapper>
+          </main>
+        </div>
         <Footer />
       </Wrapper>
     </>

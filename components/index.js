@@ -13,3 +13,9 @@ export { default as Boop } from "components/physics/springs/boop";
 
 // Hero
 export { default as MountainHero } from "components/hero/mountainHero";
+
+// Content
+export { default as Bio } from "components/content/bio";
+
+// interactive Components
+export { default as SocialLink } from "components/interactiveComponents/socialLink";
