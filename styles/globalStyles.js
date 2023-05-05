@@ -172,11 +172,17 @@ em {
 }
 
 a {
-  color: ${COLORS.a};
+  color: ${COLORS.main};
   cursor: pointer;
+  font-weight: 600;
   :hover {
     text-decoration: underline;
+    text-decoration-color: ${COLORS.a};
   }
+}
+
+hr {
+  margin: 1.2rem;
 }
 
 // ----------------- Math and code blocks -----------------

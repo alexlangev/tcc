@@ -5,7 +5,7 @@ import AvatarPicture from "public/images/avatar.png";
 import Github from "public/images/icons/github-icon.svg";
 import Twitter from "public/images/icons/twitter-icon.svg";
 import Linkedin from "public/images/icons/linkedin-icon.svg";
-import { COLORS } from "utils/constants";
+import { COLORS, QUERIES } from "utils/constants";
 
 export default function Bio() {
   const LOGO_WIDTH = 32;
@@ -62,6 +62,7 @@ export default function Bio() {
           logoAlt={"linkedin"}
         />
       </SocialLinkList>
+      <hr />
     </Wrapper>
   );
 }
@@ -74,6 +75,10 @@ const HelloWrapper = styled.div`
   width: 100%;
   justify-content: space-evenly;
   align-items: center;
+
+  @media ${QUERIES.mobile} {
+    flex-direction: column-reverse;
+  }
 `;
 
 const Avatar = styled(Image)`

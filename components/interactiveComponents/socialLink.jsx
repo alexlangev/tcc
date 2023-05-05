@@ -30,4 +30,5 @@ const Logo = styled(Image)``;
 const Label = styled.span`
   font-size: 1.2rem;
   margin-left: 5px;
+  font-weight: normal;
 `;

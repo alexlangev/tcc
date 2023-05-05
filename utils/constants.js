@@ -1,5 +1,5 @@
 const BREAKPOINTS = {
-  tabletMin: 550,
+  tabletMin: 600,
   laptopMin: 1100,
   desktopMin: 1500,
 };
@@ -18,7 +18,7 @@ const COLORS = {
 
   // Fonts
   h2: "hsl(29, 100%, 63%)", // orange
-  main: "hsl(0deg 0% 100% / 0.95)",
+  main: "hsl(0deg 0% 100% / 0.95)", // offwhite
   strong: "hsl(320, 100%, 60%)", // neon purple
   em: "hsl(0deg 0% 100% / 0.95)", // offwhite
   a: "#54867e",
