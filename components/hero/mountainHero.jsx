@@ -8,7 +8,7 @@ export default function MountainHero({ children }) {
       <SkyBg />
       <SkyBg2 />
       <LogoSkyWrapper>
-        <LogoSky src={"/images/logos/tcc-logo-2.svg"}></LogoSky>
+        <LogoSky src={"/images/logos/tcc-logo-2.svg"} />
       </LogoSkyWrapper>
       <Parallax pages={2}>
         <ParallaxLayer
@@ -81,7 +81,7 @@ export default function MountainHero({ children }) {
 }
 
 const SkyBg = styled.div`
-  background-image: ${COLORS.heroBg};
+  background-color: ${COLORS.heroBg};
   position: absolute;
   width: 100%;
   height: 100vh;

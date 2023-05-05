@@ -10,9 +10,8 @@ export default function Home() {
       </Head>
       <MountainHero>
         <Layout>
-          <HiddenH1 />
+          <HiddenH1>The Coding Canuck (Alex Langevin) Homepage</HiddenH1>
           <Bio />
-          <div>RecentPosts are here!</div>
         </Layout>
       </MountainHero>
     </>

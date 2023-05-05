@@ -11,33 +11,33 @@ export default function Navbar() {
     <MaxWidthWrapper>
       <DesktopSpacer height={"22"} /> {/* Keep this? */}
       <ContentWrapper>
-        <Boop scale={1.025} rotation={-1.5}>
+        <Boop scale={1.025} rotation={-1}>
           <Link href="/">
             <Image src={Logo} width={350} alt={"The Coding Canuck"} />
           </Link>
         </Boop>
         <NavSectionWrapper>
           <NavList>
-            <Boop scale={1.1} rotation={3}>
+            {/* <Boop scale={1.1} rotation={3}>
               <NavItem>
                 <StyledLink href="/blog">Blog</StyledLink>
               </NavItem>
-            </Boop>
-            <Boop scale={1.1} rotation={3}>
+            </Boop> */}
+            {/* <Boop scale={1.1} rotation={3}>
               <NavItem>
                 <StyledLink href="/support">Toolbox</StyledLink>
               </NavItem>
-            </Boop>
-            <Boop scale={1.1} rotation={3}>
+            </Boop> */}
+            {/* <Boop scale={1.1} rotation={3}>
               <NavItem>
                 <StyledLink href="/support">Portfolio</StyledLink>
               </NavItem>
-            </Boop>
-            <Boop scale={1.1} rotation={3}>
+            </Boop> */}
+            {/* <Boop scale={1.1} rotation={3}>
               <NavItem>
                 <StyledLink href="/daily_grind">Daily Grind</StyledLink>
               </NavItem>
-            </Boop>
+            </Boop> */}
           </NavList>
         </NavSectionWrapper>
       </ContentWrapper>

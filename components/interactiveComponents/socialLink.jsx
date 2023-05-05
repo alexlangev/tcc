@@ -25,10 +25,9 @@ const InnerWrapper = styled.a`
   align-items: center;
 `;
 
-const Logo = styled(Image)`
-  padding-right: 5px;
-`;
+const Logo = styled(Image)``;
 
 const Label = styled.span`
   font-size: 1.2rem;
+  margin-left: 5px;
 `;

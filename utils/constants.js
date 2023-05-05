@@ -17,11 +17,15 @@ const COLORS = {
   white: "hsl(0deg 0% 100%)",
 
   // Fonts
+  h2: "hsl(29, 100%, 63%)", // orange
   main: "hsl(0deg 0% 100% / 0.95)",
+  strong: "hsl(320, 100%, 60%)", // neon purple
+  em: "hsl(0deg 0% 100% / 0.95)", // offwhite
+  a: "#54867e",
 
   // Backgrounds
-  mainBg: "hsl(215, 44%, 8%)",
-  heroBg: "hsl(20, 72%, 65%)",
+  mainBg: "hsl(215, 44%, 8%)", // dark blue
+  heroBg: "hsl(20, 72%, 65%)", // peach
 };
 
 export { BREAKPOINTS, QUERIES, COLORS };

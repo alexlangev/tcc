@@ -124,11 +124,13 @@ a {
 // ----------------- general theme -----------------
 body {
   background-color: ${COLORS.mainBg};
+  line-height: calc(1em + 0.725rem);
+  font-size: 16px;
 }
 
 h1, h2, h3, h4, p, a, span, div, li, strong, em, td {
   -webkit-font-smoothing: antialiased;
-  color: ${COLORS.main}
+  color: ${COLORS.main};
 }
 
 h1 {
@@ -137,6 +139,44 @@ h1 {
 
 h2 {
   font-size: 2rem;
+  color: ${COLORS.h2}
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+h4 {
+  font-size: 1.2rem;
+}
+
+p, strong, em, a {
+  font-size: 1rem;
+}
+
+ul, ol {
+  margin-bottom: 1.2rem;
+}
+
+p {
+  margin-bottom: 1.2rem;
+}
+
+strong {
+  color: ${COLORS.strong};
+}
+
+em {
+  color: ${COLORS.em};
+  font-style: italic;
+}
+
+a {
+  color: ${COLORS.a};
+  cursor: pointer;
+  :hover {
+    text-decoration: underline;
+  }
 }
 
 // ----------------- Math and code blocks -----------------

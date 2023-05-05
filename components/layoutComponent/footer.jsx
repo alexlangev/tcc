@@ -15,34 +15,48 @@ export default function Footer() {
   return (
     <MaxWidthWrapper>
       <ContentWrapper>
-        <Boop scale={1.05} rotation={-1.5}>
-          <Image src={Logo} width={250} alt={"The Coding Canuck"} />
+        <Boop scale={1.025} rotation={-1}>
+          <Link href="/">
+            <Image src={Logo} width={250} alt={"The Coding Canuck"} />
+          </Link>
         </Boop>
         <SocialBar>
-          <SocialLink
-            linkHref={"https://twitter.com/thecodingcanuck"}
-            logoSrc={Twitter}
-            logoWidth={32}
-            logoAlt={"twitter"}
-          >
-            Twitter
-          </SocialLink>
-          <SocialLink
-            linkHref={"https://github.com/alexlangev"}
-            logoSrc={Github}
-            logoWidth={32}
-            logoAlt={"Github"}
-          >
-            Github
-          </SocialLink>
-          <SocialLink
-            linkHref={"https://www.linkedin.com/in/alexlangev/"}
-            logoSrc={Linkedin}
-            logoWidth={32}
-            logoAlt={"Linkedin"}
-          >
-            Twitter
-          </SocialLink>
+          <Boop scale={1.05} rotation={1}>
+            <li>
+              <SocialLink
+                linkHref={"https://twitter.com/thecodingcanuck"}
+                logoSrc={Twitter}
+                logoWidth={32}
+                logoAlt={"twitter"}
+              >
+                Twitter
+              </SocialLink>
+            </li>
+          </Boop>
+          <Boop scale={1.05} rotation={1}>
+            <li>
+              <SocialLink
+                linkHref={"https://github.com/alexlangev"}
+                logoSrc={Github}
+                logoWidth={32}
+                logoAlt={"Github"}
+              >
+                Github
+              </SocialLink>
+            </li>
+          </Boop>
+          <Boop scale={1.05} rotation={1}>
+            <li>
+              <SocialLink
+                linkHref={"https://www.linkedin.com/in/alexlangev/"}
+                logoSrc={Linkedin}
+                logoWidth={32}
+                logoAlt={"Linkedin"}
+              >
+                LinkedIn
+              </SocialLink>
+            </li>
+          </Boop>
         </SocialBar>
         <div>
           <span>{`© 2023 `}</span>
@@ -71,14 +85,12 @@ const SocialBar = styled.ul`
   width: fit-content;
   padding-bottom: 24px;
   padding-top: 24px;
-`;
+  margin: 0;
 
-const WebsiteLink = styled(Link)`
-  /* color: ${COLORS.A}; */
-  cursor: pointer;
-  text-decoration: underline;
-
-  &:hover {
-    font-weight: 600;
+  li {
+    margin-right: 10px;
+    list-style: none;
   }
 `;
+
+const WebsiteLink = styled(Link)``;

@@ -3,24 +3,32 @@ import { SocialLink } from "components";
 import Github from "public/images/icons/github-icon.svg";
 import Twitter from "public/images/icons/twitter-icon.svg";
 import Linkedin from "public/images/icons/linkedin-icon.svg";
-import { Boop } from "components";
 
 export default function Bio() {
   const LOGO_WIDTH = 32;
   return (
     <Wrapper>
       <HelloWrapper>
-        <HelloPrefix>Hi internet!</HelloPrefix>
+        <HelloPrefix>Hi internet,</HelloPrefix>
         <HelloSuffix>
-          I am a <strong>security researcher</strong> and{" "}
-          <strong>developper</strong> and <em>mathematics enthusiast</em>.
+          welcome to <strong>The Coding Canuck</strong> blog! I{"'"}m{" "}
+          <strong>Alex Langevin</strong>, a <strong>security researcher</strong>
+          , <strong>developper</strong> and <em>math enthusiast</em>.
         </HelloSuffix>
       </HelloWrapper>
       <ul>
-        <li>I blog about technical subjects and occasionnal carrer updates</li>
-        <li>I keep track my performance as a security researcher</li>
-        <li>I write interactive tools and guides mostly for myself</li>
-        <li>I share my daily grind</li>
+        <ListItem>
+          I write technical <a>articles</a> and occasionnal carrer updates
+        </ListItem>
+        <ListItem>
+          I track my <a>performance</a> as a security researcher
+        </ListItem>
+        <ListItem>
+          I write interactive learning <a>tools and cheatsheets</a>
+        </ListItem>
+        <ListItem>
+          I share my <a>daily grind</a>
+        </ListItem>
       </ul>
       <p>Feel free to contact me on one of these platforms:</p>
       <SocialLinkList>
@@ -48,9 +56,9 @@ export default function Bio() {
   );
 }
 
-const Wrapper = styled.div``;
+const Wrapper = styled.article``;
 
-const HelloWrapper = styled.div`
+const HelloWrapper = styled.p`
   display: flex;
   flex-direction: row;
   align-items: flex-end;
@@ -58,14 +66,20 @@ const HelloWrapper = styled.div`
   flex-wrap: wrap; /* allow content to wrap onto next line */
 `;
 
-const HelloPrefix = styled.h2`
-  line-height: 1.1em;
-  padding-right: 0.15em;
+const HelloPrefix = styled.span`
+  font-size: 2rem;
 `;
 
-const HelloSuffix = styled.p``;
+const ListItem = styled.li`
+  list-style: disc;
+`;
+
+const HelloSuffix = styled.span``;
 
 const SocialLinkList = styled.ul`
   display: flex;
   flex-direction: row;
+  * :not(:last-child) {
+    margin-right: 4px;
+  }
 `;
