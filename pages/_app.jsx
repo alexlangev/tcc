@@ -25,6 +25,11 @@ export default function App({ Component, pageProps }) {
           href="/images/logos/tcc-fav.svg"
           sizes="16x16"
         />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <meta property="og:type" content="website" />
       </Head>
       <LayoutComponent>
         <Script

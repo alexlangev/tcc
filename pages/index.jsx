@@ -7,6 +7,10 @@ export default function Home() {
       <Head>
         <title>The Coding Canuck - Homepage</title>
         <meta property="og:title" content="The Coding Canuck - Homepage" />
+        <meta
+          name="description"
+          content="Homepage and bio of the author, Alex Langevin"
+        />
       </Head>
       <MountainHero>
         <Layout>
