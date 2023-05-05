@@ -1,21 +1,31 @@
 import styled from "styled-components";
-import { SocialLink } from "components";
+import { SocialLink, DesktopSpacer } from "components";
+import Image from "next/image";
+import AvatarPicture from "public/images/avatar.png";
 import Github from "public/images/icons/github-icon.svg";
 import Twitter from "public/images/icons/twitter-icon.svg";
 import Linkedin from "public/images/icons/linkedin-icon.svg";
+import { COLORS } from "utils/constants";
 
 export default function Bio() {
   const LOGO_WIDTH = 32;
   return (
     <Wrapper>
       <HelloWrapper>
-        <HelloPrefix>Hi internet,</HelloPrefix>
-        <HelloSuffix>
-          welcome to <strong>The Coding Canuck</strong> blog! I{"'"}m{" "}
-          <strong>Alex Langevin</strong>, a <strong>security researcher</strong>
-          , <strong>developper</strong> and <em>math enthusiast</em>.
-        </HelloSuffix>
+        <Avatar
+          src={AvatarPicture}
+          alt="Avatar of the author"
+          width={300}
+          height={300}
+        />
+        <Hello>Hi internet!</Hello>
       </HelloWrapper>
+      <DesktopSpacer height={60} />
+      <BioText>
+        Welcome to <strong>The Coding Canuck</strong> blog! I{"'"}m{" "}
+        <strong>Alex Langevin</strong>, a <strong>security researcher</strong>,{" "}
+        <strong>developper</strong> and <em>math enthusiast</em>.
+      </BioText>
       <ul>
         <ListItem>
           I write technical <a>articles</a> and occasionnal carrer updates
@@ -58,23 +68,30 @@ export default function Bio() {
 
 const Wrapper = styled.article``;
 
-const HelloWrapper = styled.p`
+const HelloWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
-  height: fit-content;
-  flex-wrap: wrap; /* allow content to wrap onto next line */
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: center;
 `;
 
-const HelloPrefix = styled.span`
-  font-size: 2rem;
+const Avatar = styled(Image)`
+  border-radius: 50%;
 `;
+
+const Hello = styled.h2`
+  font-size: 4rem;
+  width: min-content;
+  line-height: 1.5;
+  color: ${COLORS.main};
+`;
+
+const BioText = styled.p``;
 
 const ListItem = styled.li`
   list-style: disc;
 `;
-
-const HelloSuffix = styled.span``;
 
 const SocialLinkList = styled.ul`
   display: flex;

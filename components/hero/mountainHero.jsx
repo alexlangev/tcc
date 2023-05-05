@@ -1,84 +1,70 @@
 import styled from "styled-components";
-import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import { COLORS } from "utils/constants";
 
 export default function MountainHero({ children }) {
   return (
-    <>
+    <Wrapper>
       <SkyBg />
       <SkyBg2 />
-      <LogoSkyWrapper>
-        <LogoSky src={"/images/logos/tcc-logo-2.svg"} />
-      </LogoSkyWrapper>
-      <Parallax pages={2}>
-        <ParallaxLayer
-          speed={-0.65}
+      <MountainRangeWrapper>
+        <LogoSkyWrapper>
+          <LogoSky src={"/images/logos/tcc-logo-2.svg"} />
+        </LogoSkyWrapper>
+        <MountainRange
           style={{
             backgroundImage: `url("/images/hero/mountains-layer1.svg")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
+            zIndex: -99,
           }}
         />
-        <ParallaxLayer
-          speed={-0.6}
+        <MountainRange
           style={{
             backgroundImage: `url("/images/hero/mountains-layer2.svg")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
+            zIndex: -98,
           }}
         />
-        <ParallaxLayer
-          speed={-0.55}
+        <MountainRange
           style={{
             backgroundImage: `url("/images/hero/mountains-layer3.svg")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
+            zIndex: -97,
           }}
         />
-        <ParallaxLayer
-          speed={-0.45}
+        <MountainRange
           style={{
             backgroundImage: `url("/images/hero/mountains-layer4.svg")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
+            zIndex: -96,
           }}
         />
-        <ParallaxLayer
-          speed={-0.44}
+        <MountainRange
           style={{
             backgroundImage: `url("/images/hero/mountains-layer5.svg")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
+            zIndex: -95,
           }}
         />
-        <ParallaxLayer
-          speed={-0.35}
+        <MountainRange
           style={{
             backgroundImage: `url("/images/hero/mountains-layer6.svg")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
+            zIndex: -94,
           }}
         />
-        <ParallaxLayer
-          speed={-0.175}
+        <MountainRange
           style={{
             backgroundImage: `url("/images/hero/mountains-layer7.svg")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
+            zIndex: -93,
           }}
         />
-        <ParallaxLayer
+        <MountainRange
           style={{
             backgroundImage: `url("/images/hero/mountains-layer8.svg")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
+            zIndex: -92,
           }}
         />
-        <ContentParallax offset={1}>{children}</ContentParallax>
-      </Parallax>
-    </>
+      </MountainRangeWrapper>
+      <ChildrenWrapper>{children}</ChildrenWrapper>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div``;
 
 const SkyBg = styled.div`
   background-color: ${COLORS.heroBg};
@@ -99,11 +85,25 @@ const SkyBg2 = styled.div`
   z-index: -100;
 `;
 
+const MountainRangeWrapper = styled.div`
+  height: 100vh;
+`;
+
+const MountainRange = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+`;
+
 const LogoSkyWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  position: sticky;
   top: 5%;
   width: 100%;
   z-index: -99;
@@ -113,6 +113,8 @@ const LogoSky = styled.img`
   width: 40%;
 `;
 
-const ContentParallax = styled(ParallaxLayer)`
+const ChildrenWrapper = styled.div`
+  position: relative;
+  z-index: 1;
   background-color: ${COLORS.mainBg};
 `;
