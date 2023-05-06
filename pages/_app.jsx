@@ -7,6 +7,7 @@ import GlobalStyle from "../styles/globalStyles";
 import { Montserrat } from "@next/font/google";
 import { useRouter } from "next/router";
 import React from "react";
+import { ParallaxProvider } from "react-scroll-parallax";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -44,7 +45,9 @@ export default function App({ Component, pageProps }) {
           gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}');
         `}
         </Script>
-        <Component {...pageProps} />
+        <ParallaxProvider>
+          <Component {...pageProps} />
+        </ParallaxProvider>
         <GlobalStyle />
       </LayoutComponent>
     </div>

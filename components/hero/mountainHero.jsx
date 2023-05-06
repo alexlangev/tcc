@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { COLORS } from "utils/constants";
+import { Parallax } from "react-scroll-parallax";
 
 export default function MountainHero({ children }) {
   return (
@@ -11,42 +12,49 @@ export default function MountainHero({ children }) {
           <LogoSky src={"/images/logos/tcc-logo-2.svg"} />
         </LogoSkyWrapper>
         <MountainRange
+          translateY={[-60, 60]}
           style={{
             backgroundImage: `url("/images/hero/mountains-layer1.svg")`,
             zIndex: -99,
           }}
         />
         <MountainRange
+          translateY={[-56, 56]}
           style={{
             backgroundImage: `url("/images/hero/mountains-layer2.svg")`,
             zIndex: -98,
           }}
         />
         <MountainRange
+          translateY={[-50, 50]}
           style={{
             backgroundImage: `url("/images/hero/mountains-layer3.svg")`,
             zIndex: -97,
           }}
         />
         <MountainRange
+          translateY={[-45, 45]}
           style={{
             backgroundImage: `url("/images/hero/mountains-layer4.svg")`,
             zIndex: -96,
           }}
         />
         <MountainRange
+          translateY={[-38, 38]}
           style={{
             backgroundImage: `url("/images/hero/mountains-layer5.svg")`,
             zIndex: -95,
           }}
         />
         <MountainRange
+          translateY={[-30, 30]}
           style={{
             backgroundImage: `url("/images/hero/mountains-layer6.svg")`,
             zIndex: -94,
           }}
         />
         <MountainRange
+          translateY={[-15, 15]}
           style={{
             backgroundImage: `url("/images/hero/mountains-layer7.svg")`,
             zIndex: -93,
@@ -89,7 +97,7 @@ const MountainRangeWrapper = styled.div`
   height: 100vh;
 `;
 
-const MountainRange = styled.div`
+const MountainRange = styled(Parallax)`
   position: absolute;
   top: 0;
   left: 0;

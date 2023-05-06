@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { SocialLink, DesktopSpacer } from "components";
+import { SocialLink } from "components";
 import Image from "next/image";
 import AvatarPicture from "public/images/avatar.png";
 import Github from "public/images/icons/github-icon.svg";
@@ -20,7 +20,6 @@ export default function Bio() {
         />
         <Hello>Hi internet!</Hello>
       </HelloWrapper>
-      <DesktopSpacer height={60} />
       <BioText>
         Welcome to <strong>The Coding Canuck</strong> blog! I{"'"}m{" "}
         <strong>Alex Langevin</strong>, a <strong>security researcher</strong>,{" "}
@@ -75,7 +74,8 @@ const HelloWrapper = styled.div`
   width: 100%;
   justify-content: space-evenly;
   align-items: center;
-
+  margin-bottom: 60px;
+  margin-top: 60px;
   @media ${QUERIES.mobile} {
     flex-direction: column-reverse;
   }

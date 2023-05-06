@@ -11,4 +11,6 @@ const Wrapper = styled.div`
   margin-right: auto;
   padding-left: 30px;
   padding-right: 30px;
+  position: sticky;
+  top: 0;
 `;
