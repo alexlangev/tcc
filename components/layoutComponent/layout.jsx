@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Navbar, MaxWidthWrapper, Footer } from "components";
+import { Navbar, MaxWidthWrapper, Footer } from "/components";
 
 export default function Layout({ children }) {
   return (

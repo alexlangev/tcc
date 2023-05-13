@@ -32,7 +32,9 @@ export default function App({ Component, pageProps }) {
         />
         <meta property="og:type" content="website" />
       </Head>
+
       <LayoutComponent>
+        {/* Right place??? */}
         <Script
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}`}
