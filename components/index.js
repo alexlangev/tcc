@@ -16,6 +16,7 @@ export { default as MountainHero } from "components/hero/mountainHero";
 
 // Content
 export { default as Bio } from "components/content/bio";
+export { default as SyntaxHighlighter } from "components/content/syntaxHighlighter";
 
 // interactive Components
 export { default as SocialLink } from "components/interactiveComponents/socialLink";

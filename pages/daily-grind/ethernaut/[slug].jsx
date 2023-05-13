@@ -1,6 +1,7 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { useMemo } from "react";
 import { getFilesByCategory, getFileContent } from "@/utils/helpers/mdxStuff";
+import { SyntaxHighlighter } from "/components";
 
 export default function Page({ code, frontmatter }) {
   console.log(frontmatter);
@@ -9,7 +10,7 @@ export default function Page({ code, frontmatter }) {
   return (
     <>
       <h1>{frontmatter.title}</h1>
-      <Content />
+      <Content components={{ pre: SyntaxHighlighter }} />
     </>
   );
 }
@@ -38,23 +39,3 @@ export async function getStaticProps({ params }) {
     props: { code, frontmatter },
   };
 }
-
-// import * as React from "react";
-// import { getMDXComponent } from "mdx-bundler/client";
-
-// function Post({ code, frontmatter }) {
-//   // it's generally a good idea to memoize this function call to
-//   // avoid re-creating the component every render.
-//   const Component = React.useMemo(() => getMDXComponent(code), [code]);
-//   return (
-//     <>
-//       <header>
-//         <h1>{frontmatter.title}</h1>
-//         <p>{frontmatter.description}</p>
-//       </header>
-//       <main>
-//         <Component />
-//       </main>
-//     </>
-//   );
-// }
