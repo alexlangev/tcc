@@ -6,6 +6,7 @@ import Github from "public/images/icons/github-icon.svg";
 import Twitter from "public/images/icons/twitter-icon.svg";
 import Linkedin from "public/images/icons/linkedin-icon.svg";
 import { COLORS, QUERIES } from "utils/constants";
+import Link from "next/link";
 
 export default function Bio() {
   const LOGO_WIDTH = 32;
@@ -26,18 +27,18 @@ export default function Bio() {
         <strong>developper</strong> and <em>math enthusiast</em>.
       </BioText>
       <ul>
-        <ListItem>
+        {/* <ListItem>
           I write technical <a>articles</a> and occasionnal carrer updates
-        </ListItem>
-        <ListItem>
+        </ListItem> */}
+        {/* <ListItem>
           I track my <a>performance</a> as a security researcher
-        </ListItem>
-        <ListItem>
+        </ListItem> */}
+        {/* <ListItem>
           I write interactive learning <a>tools and cheatsheets</a>
-        </ListItem>
-        <ListItem>
-          I share my <a>daily grind</a>
-        </ListItem>
+        </ListItem> */}
+        {/* <ListItem>
+          I share my <Link href={"/daily-grind"}>daily grind</Link>
+        </ListItem> */}
       </ul>
       <p>Feel free to contact me on one of these platforms:</p>
       <SocialLinkList>

@@ -4,7 +4,6 @@ import { getFilesByCategory, getFileContent } from "@/utils/helpers/mdxStuff";
 import { SyntaxHighlighter } from "/components";
 
 export default function Page({ code, frontmatter }) {
-  console.log(frontmatter);
   const Content = useMemo(() => getMDXComponent(code), [code]);
 
   return (
@@ -34,7 +33,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const { code, frontmatter } = await getFileContent("ethernaut", params.slug);
-  console.log(frontmatter);
+
   return {
     props: { code, frontmatter },
   };

@@ -24,7 +24,18 @@ const COLORS = {
   a: "#54867e",
 
   // Backgrounds
-  mainBg: "hsl(215, 44%, 8%)", // dark blue
+  bg1: "hsl(215, 44%, 8%)", // dark blue - first mountain range - same as mainBg
+  bg2: "hsl(211, 49%, 11%)", // 2nd mountain range
+  bg3: "hsl(210, 53%, 15%)", // 3rd mountain range
+  bg4: "hsl(201, 54%, 21%)", // 4th mountain range
+  bg5: "hsl(182, 38%, 34%)", // 5th mountain range
+  bg6: "hsl(194, 51%, 28%)", // 6th mountain range
+  bg7: "hsl(183, 32%, 38%)", // 7th mountain range
+  bg8: "hsl(170, 23%, 43%)", // 8th mountain range
+  bgSky: "hsl(20, 72%, 65%)", // peachy sky
+
+  mainBg: "hsl(215, 44%, 8%)",
+  secBg: "hsl(210, 53%, 15%)",
   heroBg: "hsl(20, 72%, 65%)", // peach
 };
 

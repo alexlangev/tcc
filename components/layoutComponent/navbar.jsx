@@ -36,7 +36,7 @@ export default function Navbar() {
             </Boop> */}
               {/* <Boop scale={1.1} rotation={3}>
                 <NavItem>
-                  <StyledLink href="/daily_grind">Daily Grind</StyledLink>
+                  <StyledLink href="/daily-grind">Daily Grind</StyledLink>
                 </NavItem>
               </Boop> */}
             </NavList>
