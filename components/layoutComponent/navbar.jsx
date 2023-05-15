@@ -34,11 +34,11 @@ export default function Navbar() {
                 <StyledLink href="/support">Portfolio</StyledLink>
               </NavItem>
             </Boop> */}
-              {/* <Boop scale={1.1} rotation={3}>
+              <Boop scale={1.1} rotation={3}>
                 <NavItem>
                   <StyledLink href="/daily-grind">Daily Grind</StyledLink>
                 </NavItem>
-              </Boop> */}
+              </Boop>
             </NavList>
           </NavSectionWrapper>
         </ContentWrapper>

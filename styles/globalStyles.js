@@ -135,23 +135,23 @@ h1, h2, h3, h4, p, a, span, div, li, strong, em, td {
 
 h1 {
   font-size: 2.5rem;
-  margin-bottom: 14px;
+
 }
 
 h2 {
   font-size: 2rem;
   color: ${COLORS.h2};
-  margin-bottom: 14px;
+
 }
 
 h3 {
   font-size: 1.5rem;
-  /* margin-bottom: 18px; */
+
 }
 
 h4 {
   font-size: 1.2rem;
-  /* margin-bottom: 18px; */
+
 }
 
 p, strong, em, a {
@@ -159,11 +159,9 @@ p, strong, em, a {
 }
 
 ul, ol {
-  margin-bottom: 1.2rem;
 }
 
 p {
-  margin-bottom: 1.2rem;
 }
 
 strong {
@@ -183,10 +181,6 @@ a {
     text-decoration: underline;
     text-decoration-color: ${COLORS.a};
   }
-}
-
-hr {
-  margin: 1.2rem;
 }
 
 // ----------------- Math and code blocks -----------------

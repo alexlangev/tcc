@@ -1,14 +1,16 @@
 import { getMDXComponent } from "mdx-bundler/client";
 import { useMemo } from "react";
 import { getFilesByCategory, getFileContent } from "@/utils/helpers/mdxStuff";
-import { SyntaxHighlighter } from "/components";
+import { SyntaxHighlighter, PageHeader, DesktopSpacer } from "/components";
 
 export default function Page({ code, frontmatter }) {
   const Content = useMemo(() => getMDXComponent(code), [code]);
 
   return (
     <>
-      <h1>{frontmatter.title}</h1>
+      <DesktopSpacer height={32} />
+      <PageHeader title={frontmatter.title} />
+      <DesktopSpacer height={64} />
       <Content components={{ pre: SyntaxHighlighter }} />
     </>
   );

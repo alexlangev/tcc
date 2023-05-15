@@ -36,9 +36,9 @@ export default function Bio() {
         {/* <ListItem>
           I write interactive learning <a>tools and cheatsheets</a>
         </ListItem> */}
-        {/* <ListItem>
+        <ListItem>
           I share my <Link href={"/daily-grind"}>daily grind</Link>
-        </ListItem> */}
+        </ListItem>
       </ul>
       <p>Feel free to contact me on one of these platforms:</p>
       <SocialLinkList>

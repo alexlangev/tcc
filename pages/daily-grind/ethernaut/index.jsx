@@ -1,12 +1,15 @@
 import { getFilesByCategory, getFileContent } from "@/utils/helpers/mdxStuff";
 import Link from "next/link";
+import { PageHeader, DesktopSpacer } from "@/components";
 
 export default function EthernautPage({ allFrontMatter }) {
-  console.log("allFrontMatter", allFrontMatter);
+  const TITLE = "Ethernaut";
+  const SUBTITLE = "Stuff I work on daily";
   return (
     <>
-      <h1>Ethernaut</h1>
-
+      <DesktopSpacer height={32} />
+      <PageHeader title={TITLE} sub={SUBTITLE} />
+      <DesktopSpacer height={64} />
       <ul>
         {allFrontMatter.map((level) => (
           <li key={level.slug}>
