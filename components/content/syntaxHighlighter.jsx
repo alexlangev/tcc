@@ -22,9 +22,9 @@ const SyntaxHighlighter = ({ children }) => {
           )}
           <PreBlock className={className} style={{ ...style }}>
             {tokens.slice(0, -1).map((line, i) => (
-              <div {...getLineProps({ line, key: i })}>
-                {line.map((token, key) => (
-                  <span {...getTokenProps({ token, key })} />
+              <div {...getLineProps({ line })}>
+                {line.map((token) => (
+                  <span {...getTokenProps({ token })} />
                 ))}
               </div>
             ))}
