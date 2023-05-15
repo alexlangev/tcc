@@ -1,50 +1,46 @@
 ---
 title: Level 1 - Fallback
 slug: level1
+published: 05-15-2023
+lastEdited:
 ---
 
-import { InlineMath, BlockMath } from "react-katex";
+import { ExternalLink } from "./../components";
 
-# My Document
+## Objectives
 
-Here's an inline math expression: <InlineMath>{'\\sqrt{a^2 + b^2}'}</InlineMath>. And here's a displayed math expression:
+1. Claim ownership of the contract.
+2. Steal all of the funds.
 
-<BlockMath>
-  {"\\int_{-\\infty}^\\infty e^{-x^2/2} dx = \\sqrt{2\\pi}"}
-</BlockMath>
+## Vulnerabilities
 
-# This is test 1
+### Flawed access control
 
-- list item1
-- list item2
-- list item3
+A transfer of ownership is present in the `receive` function. This is dangerous since `receive` is a public
+function. The `require` statement condition is also not very strict which open the door to anyone to become the
+owner.
 
-```js
-// This is Javacript
-let myVar = "hello World";
-console.log(myVar);
-
-import Highlight, { defaultProps } from "prism-react-renderer";
-
-const SyntaxHighlighter = ({ children }) => {
-  const code = children.props.children;
-
-  return (
-    <Highlight {...defaultProps} code={code}>
-      {({ className, style, tokens, getLineProps, getTokenProps }) => (
-        <pre className={className} style={{ ...style }}>
-          {tokens.slice(0, -1).map((line, i) => (
-            <div {...getLineProps({ line, key: i })}>
-              {line.map((token, key) => (
-                <span {...getTokenProps({ token, key })} />
-              ))}
-            </div>
-          ))}
-        </pre>
-      )}
-    </Highlight>
-  );
-};
-
-export default SyntaxHighlighter;
+```solidity
+receive() external payable {
+  require(msg.value > 0 && contributions[msg.sender] > 0);
+  owner = msg.sender;
+}
 ```
+
+## Exploit
+
+1. Call `contribute` alongside a value of at least 1 wei. The balance of your address is now positive.
+2. Send at least 1 wei to the contract address. This will call the `receive` function. Since the balance
+   of your address is greater than 0, the require statement condition is repected and the body of the function
+   will execute and the ownership will be tranfered to your address.
+3. Call `withdraw` to steal all of the funds.
+
+## Suggested mitigation
+
+1. Move the ownership assignment into a `onlyOwner` function.
+2. For bigger projects, using the `Ownable` library by OpenZeppelin.
+
+## Further reading
+
+Ownership library from OpenZeppelin <ExternalLink href={"https://docs.openzeppelin.com/contracts/2.x/api/ownership"}/>
+A short blog post on ownership exploits [a](https://blog.finxter.com/smart-contract-security-series-part-1-ownership-exploit/)

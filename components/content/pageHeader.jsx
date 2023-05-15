@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { COLORS } from "@/utils/constants";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { Fragment } from "react";
 
 export default function PageHeader({ title, sub }) {
   const router = useRouter();
@@ -19,17 +20,21 @@ export default function PageHeader({ title, sub }) {
       <BreadCrumbs>
         {crumbsArray.map((crumb, index) => {
           if (index !== 0) {
-            path = `${path}/${crumb}`;
+            if (index === 1) {
+              path = `/${crumb}`;
+            } else {
+              path = `${path}/${crumb}`;
+            }
           }
           return (
-            <>
-              <li key={crumb}>
+            <Fragment key={`crumb-${crumb}`}>
+              <li>
                 <Link href={path}>{crumb}</Link>
               </li>
               {index !== crumbsArray.length - 1 && (
                 <BreadCrumbsSeparator>/</BreadCrumbsSeparator>
               )}
-            </>
+            </Fragment>
           );
         })}
       </BreadCrumbs>

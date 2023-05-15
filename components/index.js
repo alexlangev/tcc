@@ -21,3 +21,4 @@ export { default as PageHeader } from "components/content/pageHeader";
 
 // interactive Components
 export { default as SocialLink } from "components/interactiveComponents/socialLink";
+export { default as ExternalLink } from "components/interactiveComponents/externalLink";

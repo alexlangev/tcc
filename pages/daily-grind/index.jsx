@@ -14,7 +14,7 @@ export default function DailyGrindPage() {
       <DesktopSpacer height={64} />
       <Category>Capture The Flag Challenges</Category>
       <Content>
-        <Link href={"/daily-grind/ethernaut"}>
+        <Link href={"daily-grind/ethernaut"}>
           <h3>Ethernaut</h3>
           <Subtitle>Ethernaut is a bla bla bla</Subtitle>
         </Link>
