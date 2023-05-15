@@ -22,8 +22,10 @@ const SyntaxHighlighter = ({ children }) => {
           )}
           <PreBlock className={className} style={{ ...style }}>
             {tokens.slice(0, -1).map((line, i) => (
+              // eslint-disable-next-line react/jsx-key
               <div {...getLineProps({ line })}>
                 {line.map((token) => (
+                  // eslint-disable-next-line react/jsx-key
                   <span {...getTokenProps({ token })} />
                 ))}
               </div>
