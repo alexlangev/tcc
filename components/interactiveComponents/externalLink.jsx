@@ -1,14 +1,16 @@
-import Link from "next/link";
 import Image from "next/image";
 import OpenInNew from "public/images/icons/open-in-new.svg";
 import styled from "styled-components";
 
 export default function ExternalLink({ href }) {
   return (
-    <Link href={href}>
-      <Icon src={OpenInNew} width={32} alt={32} />
-    </Link>
+    <a href={href} target="_blank" rel="noopener noreferrer">
+      <Icon src={OpenInNew} width={22} alt={22} />
+    </a>
   );
 }
 
-const Icon = styled(Image)``;
+const Icon = styled(Image)`
+  display: inline-block;
+  vertical-align: middle;
+`;

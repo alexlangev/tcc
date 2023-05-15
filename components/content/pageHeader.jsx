@@ -63,7 +63,8 @@ const BreadCrumbsSeparator = styled.span`
 `;
 
 const Title = styled.h1`
-  margin: 32px 0 8px 0;
+  margin-top: 48px;
+  margin-bottom: 32px;
 `;
 
 const Subtitle = styled.p`
