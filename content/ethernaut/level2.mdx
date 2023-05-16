@@ -1,0 +1,53 @@
+---
+title: Level 2 - Fallback
+slug: level2
+published: 05-15-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Claim ownership of the contract.
+
+## Vulnerabilities
+
+### Old syntax of declaring a constructor
+
+The contract uses Solidity version 0.6.0 which enabled you to create a constructor function simply by giving it
+the same name as the contract. This is dangerous because constructors usually handle critical behavior. In this
+case, the contract is named `Fallout` but the function supposed to be the constructor is named `Fal1out`.
+
+```solidity
+function Fal1out() public payable {
+
+  function Fal1out() public payable {
+    owner = msg.sender;
+    allocations[owner] = msg.value;
+  }
+
+}
+```
+
+The function Fal1out is therefore a public function that gives the ownership to the caller.
+
+## Exploit
+
+1. Call the `Fal1out` function.
+
+## Suggested mitigation
+
+1. Fix the typo to `Fallout`.
+2. If possible, update the Solidity version to at least 0.8.0 and use the constructor keyword instead like
+   the following:
+
+```solidity
+constructor() {
+  owner = msg.sender;
+  allocations[owner] = msg.value;
+}
+```
+
+## Further reading
+
+- SWC-118 - Incorrect constructor name <ExternalLink href={"https://swcregistry.io/docs/SWC-118"} />
+- Example of using the constructor keyword <ExternalLink href={"https://solidity-by-example.org/constructor/"} />

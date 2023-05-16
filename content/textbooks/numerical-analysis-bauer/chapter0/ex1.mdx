@@ -1,0 +1,36 @@
+---
+title: Exercise 1
+slug: ex1
+published: 05-16-2023
+lastEdited:
+---
+
+## (a)
+
+Let's use **Horner's method** to solve this exercise.
+
+Rewrite <InlineMath>P(x)</InlineMath> in as a _nested multiplication_.
+
+<BlockMath>
+  {`
+\\begin{aligned}
+P(x) &= 6x^4 + x^3 + 5x^2 - 5x + 1 \\\\
+&= 1 + x(5 - 5x + x^2 + 6x^3) \\\\
+&= 1 + x(5 - x(5 + x + 6x^2)) \\\\
+&= 1 + x(5 - x(5 + x(1 + 6x))) \\\\
+&= 1 + x(5 - x(5 + x(1 + x * 6))) \\\\
+\\end{aligned}
+`}
+</BlockMath>
+
+Let's evaluate from the inside out.
+
+<BlockMath>
+  {`
+\\begin{aligned}
+&\\text{multiply} \frac{}{denominator}
+
+\\end{aligned}
+`}
+
+</BlockMath>

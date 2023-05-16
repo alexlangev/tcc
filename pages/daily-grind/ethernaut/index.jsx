@@ -4,7 +4,8 @@ import { PageHeader, DesktopSpacer } from "@/components";
 
 export default function EthernautPage({ allFrontMatter }) {
   const TITLE = "Ethernaut";
-  const SUBTITLE = "Stuff I work on daily";
+  const SUBTITLE =
+    "Ethernaut is a web3/Solidity based wargame played in the Ethereum Virtual Machine. Each level is a smart contract that needs to be 'hacked'.";
   return (
     <>
       <DesktopSpacer height={32} />
@@ -22,7 +23,6 @@ export default function EthernautPage({ allFrontMatter }) {
 }
 
 export async function getStaticProps() {
-  // get all levels in the directory
   const levels = getFilesByCategory("ethernaut");
 
   const allFrontMatter = await Promise.all(

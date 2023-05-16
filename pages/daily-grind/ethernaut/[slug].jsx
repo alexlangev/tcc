@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { getFilesByCategory, getFileContent } from "@/utils/helpers/mdxStuff";
 import { SyntaxHighlighter, PageHeader, DesktopSpacer } from "/components";
 import * as components from "../../../components";
+import { InlineMath, BlockMath } from "react-katex";
 
 export default function Page({ code, frontmatter }) {
   const Content = useMemo(() => getMDXComponent(code), [code]);
@@ -12,7 +13,14 @@ export default function Page({ code, frontmatter }) {
       <DesktopSpacer height={32} />
       <PageHeader title={frontmatter.title} />
 
-      <Content components={{ pre: SyntaxHighlighter, ...components }} />
+      <Content
+        components={{
+          pre: SyntaxHighlighter,
+          InlineMath,
+          BlockMath,
+          ...components,
+        }}
+      />
     </>
   );
 }
