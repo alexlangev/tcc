@@ -1,6 +1,6 @@
 ---
 title: Level 1 - Fallback
-slug: level1
+slug: level-1
 published: 05-15-2023
 lastEdited:
 ---
@@ -14,8 +14,8 @@ lastEdited:
 
 ### Flawed access control
 
-A transfer of ownership is present in the `receive` function. This is dangerous since `receive` is a public
-function. The `require` statement condition is also not very strict which open the door to anyone to become the
+A transfer of ownership is present in the `receive` function. This is dangerous since `receive` is a **public
+function**. The `require` statement condition is also not very strict which open the door to anyone to become the
 owner.
 
 ```solidity
