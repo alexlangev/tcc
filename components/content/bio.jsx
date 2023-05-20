@@ -87,6 +87,7 @@ const Avatar = styled(Image)`
 `;
 
 const Hello = styled.h2`
+  text-decoration: none;
   font-size: 4rem;
   width: min-content;
   line-height: 1.5;

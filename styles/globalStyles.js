@@ -134,14 +134,15 @@ h1, h2, h3, h4, p, a, span, div, li, strong, em, td {
 }
 
 h1 {
+  color: ${COLORS.h2};
   font-size: 2.5rem;
   margin-top: 96px;
   margin-bottom: 32px;
 }
 
 h2 {
+  text-decoration: underline;
   font-size: 2rem;
-  color: ${COLORS.h2};
   margin-top: 96px;
   margin-bottom: 32px;
 }

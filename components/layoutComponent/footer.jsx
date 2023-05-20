@@ -9,7 +9,7 @@ import Linkedin from "public/images/icons/linkedin-icon.svg";
 
 import { Boop } from "components";
 import { SocialLink } from "components";
-import { COLORS } from "utils/constants";
+import { COLORS, QUERIES } from "utils/constants";
 
 export default function Footer() {
   return (
@@ -29,7 +29,7 @@ export default function Footer() {
                 logoWidth={32}
                 logoAlt={"twitter"}
               >
-                Twitter
+                <Label>Twitter</Label>
               </SocialLink>
             </li>
           </Boop>
@@ -41,7 +41,7 @@ export default function Footer() {
                 logoWidth={32}
                 logoAlt={"Github"}
               >
-                Github
+                <Label>Github</Label>
               </SocialLink>
             </li>
           </Boop>
@@ -53,7 +53,7 @@ export default function Footer() {
                 logoWidth={32}
                 logoAlt={"Linkedin"}
               >
-                LinkedIn
+                <Label>LinkedIn</Label>
               </SocialLink>
             </li>
           </Boop>
@@ -92,5 +92,11 @@ const SocialBar = styled.ul`
     list-style: none;
   }
 `;
+
+const Label = styled.span`
+  @media ${QUERIES.mobile} {
+    display: none  
+  }
+`
 
 const WebsiteLink = styled(Link)``;

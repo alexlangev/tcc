@@ -19,7 +19,7 @@ const COLORS = {
   // Fonts
   h2: "hsl(29, 100%, 63%)", // orange
   main: "hsl(0deg 0% 100% / 0.95)", // offwhite
-  sub: "hsl(0deg 0% 100% / 0.70)", // darker offwhite
+  sub: "hsl(0deg 0% 100% / 0.75)", // darker offwhite
   strong: "hsl(320, 100%, 60%)", // neon purple
   em: "hsl(0deg 0% 100% / 0.95)", // offwhite
   a: "#54867e",

@@ -50,10 +50,10 @@ const Wrapper = styled.div`
   align-items: center;
   background-color: ${COLORS.secBg};
   border-radius: 1.5rem;
+  padding: 16px 32px;
 `;
 
 const BreadCrumbs = styled.ol`
-  margin-top: 16px;
   display: flex;
   flex-direction: row;
 `;
@@ -65,6 +65,7 @@ const BreadCrumbsSeparator = styled.span`
 const Title = styled.h1`
   margin-top: 48px;
   margin-bottom: 32px;
+  color: ${COLORS.h2};
 `;
 
 const Subtitle = styled.p`
