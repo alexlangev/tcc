@@ -17,9 +17,9 @@ export default function DailyGrindPage() {
         <Link href={"daily-grind/ethernaut"}>
           <h3>Ethernaut</h3>
           <Subtitle>
-            Ethernaut is a web3/Solidity based wargame played in the Ethereum
+            {`Ethernaut is a web3/Solidity based wargame played in the Ethereum
             Virtual Machine. Each level is a smart contract that needs to be
-            'hacked'.
+            'hacked'.`}
           </Subtitle>
         </Link>
       </Content>
