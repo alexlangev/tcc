@@ -5,6 +5,8 @@ published: 05-15-2023
 lastEdited:
 ---
 
+Here is some text with `Inline code`.
+
 ```js
 // Hi there!!!!
 import { bundleMDX } from "mdx-bundler";
@@ -41,6 +43,12 @@ const getFileContent = async (category, slug) => {
 
 export { getFilesByCategory, getFileContent };
 ```
+
+Here's an inline math expression: <InlineMath>{'\\sqrt{a^2 + b^2}'}</InlineMath>. And here's a displayed math expression:
+
+<BlockMath>
+  {"\\int_{-\\infty}^\\infty e^{-x^2/2} dx = \\sqrt{2\\pi}"}
+</BlockMath>
 
 ```solidity
 // SPDX-License-Identifier: MIT

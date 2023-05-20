@@ -200,6 +200,17 @@ hr {
 }
 
 // ----------------- Math and code blocks -----------------
+
+code {
+  background-color: ${COLORS.secBg};
+  margin: 1px -1px;
+  padding: 4.5px 6px;
+  font-size: 0.9em;
+  letter-spacing: -0.5px;
+  border-radius: 3px;
+  display: inline;
+  position: relative;
+}
 `;
 
 export default GlobalStyle;

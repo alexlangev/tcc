@@ -1,6 +1,7 @@
 import { Prism, Highlight, themes, defaultProps } from "prism-react-renderer";
 import styled from "styled-components";
 import myCustomTheme from "@/styles/syntaxHighlightingTheme";
+import { COLORS } from "@/utils/constants";
 
 (typeof global !== "undefined" ? global : window).Prism = Prism;
 require("prismjs/components/prism-solidity");
@@ -43,8 +44,21 @@ const SyntaxHighlighter = ({ children }) => {
 
 export default SyntaxHighlighter;
 
-const LanguageHeadingContainer = styled.div``;
+const LanguageHeadingContainer = styled.div`
+  font-weight: bolder;
+  width: fit-content;
+  padding: 8px 16px 0 16px;
+  border-radius: 16px 16px 0 0;
+`;
 
-const CodeBlockContainer = styled.div``;
+const CodeBlockContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
 
-const PreBlock = styled.pre``;
+const PreBlock = styled.pre`
+  padding: 16px;
+  width: 100%;
+  border-radius: 15px 0 15px 15px;
+`;
