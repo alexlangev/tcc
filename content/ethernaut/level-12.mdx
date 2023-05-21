@@ -1,0 +1,31 @@
+---
+title: Level 12 -
+slug: level-12
+published: 05-21-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Unlock the contract. (change the `locked` variable to false)
+
+## Vulnerabilities
+
+### Saving private data as private
+
+`private` storage variables are hidden from other contracts but visible on the blockchain. Storing
+unencrypted passwords as private variables is dangerious since their values are avaialble to everyone.
+
+## Exploit
+
+1. Figure out in which storage slot `data[2]` is located. (it's in the 5th index)
+
+2. In the console, use `await web3.eth.getStorageAt("0xc7a7d427bAc3B3238D5DC6d2950692D996619F37", 5);` to read the value.
+
+3. Remove the last 16 bytes using `.substr(2,32)`.
+
+4. Call `unlock` with the remaining 16 bytes as argument.
+
+## Further reading
+
+- SWC-136 - Unencrypted private data on-chain <ExternalLink href={"https://swcregistry.io/docs/SWC-136"} />

