@@ -1,0 +1,38 @@
+---
+title: Level 17 - Recovery
+slug: level-17
+published: 05-24-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Recover the 0.001 eth from the lost `SimpleToken` contract.
+
+## Vulnerabilities
+
+### Transaction information is publically available
+
+All transaction data is publically available on eterscan. We can use this fact to find the lost `SimpleToken`
+contract address.
+
+## Exploit
+
+1. Use SepoliaEtherscan to look into the `Recovery` contract.
+
+2. Find the target address of the 0.001Eth we are looking to get back. This address will be the lost `SimpleToken`
+   address.
+
+<img src="images/screenshots/eth-scan.png" alt="" title="" />
+
+3. Call the `destroy` function from that address with your EOA as target to claim the lost 0.001eth for yourself
+   and destroying the `SimpleToken` contract in the process.
+
+## Suggested mitigation
+
+1. Don't rely on people not finding contract addresses.
+2. Add a `onlyOwner` function modifier to the `destroy` function of `SimpleToken`.
+
+## Further reading
+
+- Sepolia Etherscan <ExternalLink href={"https://sepolia.etherscan.io/"} />
