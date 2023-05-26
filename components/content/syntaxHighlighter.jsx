@@ -1,7 +1,6 @@
-import { Prism, Highlight, themes, defaultProps } from "prism-react-renderer";
+import { Prism, Highlight, defaultProps } from "prism-react-renderer";
 import styled from "styled-components";
 import myCustomTheme from "@/styles/syntaxHighlightingTheme";
-import { COLORS } from "@/utils/constants";
 
 (typeof global !== "undefined" ? global : window).Prism = Prism;
 require("prismjs/components/prism-solidity");

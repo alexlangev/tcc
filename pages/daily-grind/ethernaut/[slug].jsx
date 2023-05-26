@@ -20,6 +20,7 @@ export default function Page({ code, frontmatter }) {
           BlockMath,
           ol: OrderedList,
           ul: UnorderedList,
+          li: ListItem,
           ...components,
         }}
       />
@@ -37,6 +38,10 @@ const UnorderedList = styled.ul`
   li {
     list-style: disc;
   }
+`;
+
+const ListItem = styled.li`
+  margin-bottom: 8px;
 `;
 
 export async function getStaticPaths() {

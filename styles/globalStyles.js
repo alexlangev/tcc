@@ -168,7 +168,6 @@ ul, ol {
 
 li {
   margin-bottom: 16px;
-
 }
 
 p {
@@ -209,6 +208,7 @@ code {
   border-radius: 3px;
   display: inline;
   position: relative;
+  font-weight: 600;
 }
 `;
 
