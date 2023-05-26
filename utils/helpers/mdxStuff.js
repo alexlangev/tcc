@@ -9,8 +9,18 @@ const getFilesByCategory = (category) => {
   const contentDirectory = path.join(process.cwd(), "content", category);
   const fileNames = fs.readdirSync(contentDirectory);
   const cleanedFileNames = fileNames.map((name) => removeFileExtension(name));
+  const sortedCleanedFileNames = cleanedFileNames.sort((a, b) => {
+    const numA = Number(a.substring(a.lastIndexOf("-") + 1));
+    const numB = Number(b.substring(b.lastIndexOf("-") + 1));
 
-  return cleanedFileNames;
+    if (numA < numB) {
+      return -1;
+    } else {
+      return 1;
+    }
+  });
+
+  return sortedCleanedFileNames;
 };
 
 const getFileContent = async (category, slug) => {
@@ -30,3 +40,18 @@ const getFileContent = async (category, slug) => {
 };
 
 export { getFilesByCategory, getFileContent };
+
+// // sort by name
+// items.sort((a, b) => {
+//   const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+//   const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+//   if (nameA < nameB) {
+//     return -1;
+//   }
+//   if (nameA > nameB) {
+//     return 1;
+//   }
+
+//   // names must be equal
+//   return 0;
+// });
