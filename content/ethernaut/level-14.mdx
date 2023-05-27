@@ -8,19 +8,19 @@ imgSrc: /images/ethernaut/ethernaut14.svg
 
 ## Objectives
 
-1. Get past the three require function modifiers and register as an entrant.
+1. Get past the three `require` function and register as an entrant.
 
 ## Vulnerabilities
 
-N/A (It's a technical skill test)
+N/A, It's a technical skill test.
 
 ## Exploit
 
-1. The first two require are seemly mutualy exclusive. Therefore a little imagination is required here.
-   Calling the `enter` function from the constructor of your hack contract will result in successfully passing
-   the second require which looks of the is contract code at the address of msg.sender.
+1. The first two `require` conditions are seemingly **mutualy exclusive**. Therefore a little imagination is required here.
+   Calling the `enter` function from a `constructor` will result in successfully passing the second require condition.
 
-2. Finding the value of the bytes8 key can seem daunting. That being said, the `^` operator noted as <InlineMath>\oplus </InlineMath> is reversible. Meaning that <InlineMath> a \oplus b = c \Rightarrow a \oplus c = b</InlineMath>.
+2. Finding the value of the bytes8 key can seem daunting. That being said, the `^` operator or <InlineMath>\oplus </InlineMath> in math is **reversible**.
+   This means that <InlineMath> a \oplus b = c \Leftrightarrow a \oplus c = b</InlineMath>.
 
 3. With those two ideas in mind, write and deploy the following contract to make yourself the `entrant` :
 
@@ -42,6 +42,8 @@ contract GatekeeperTwoHack {
 
 ## Suggested mitigation
 
-N/A (It's a technical skill test)
+N/A, It's a technical skill test.
 
 ## Further reading
+
+- Bitwise operations <ExternalLink href={"https://en.wikipedia.org/wiki/Bitwise_operation"} />

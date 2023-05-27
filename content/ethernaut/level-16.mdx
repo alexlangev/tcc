@@ -1,5 +1,5 @@
 ---
-title: Level 16 - Presercation
+title: Level 16 - Preservation
 slug: level-16
 published: 05-24-2023
 lastEdited:
@@ -14,9 +14,9 @@ imgSrc: /images/ethernaut/ethernaut16.svg
 
 ### Delegatecall
 
-`Delegatecall` Can be used to modify specify storage variables. In this case, we can change the address of a library
-instance to our hack contract. From there, we can modify the owner by using a function with the same function signature
-as in the library contract.
+Calling into a contract with `delegatecall` gives full control over the the calling contract's storage values and balance. _Calling
+into untrusted contracts is very dangerous._ Changing the address of the library instance to the address of our hack contract gives us
+the ability to modify any storage values.
 
 ## Exploit
 
@@ -50,14 +50,14 @@ contract PreservationHack {
 }
 ```
 
-2. Call the `attack` function which will modify the first storage variable of the Preservation contract to the
-   address of ths hack contract.
+2. Call the `attack` function which will modify the first storage variable of the `Preservation` contract to the
+   address of ths `hack` contract.
 
 3. Call the `setFirstTime` function with any uint as input to modify the owner to the hack contract.
 
 ## Suggested mitigation
 
-Using stateless libraries prevent this type of exploit.
+- Using stateless libraries prevent this type of exploit.
 
 ## Further reading
 

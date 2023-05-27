@@ -70,11 +70,13 @@ contract ReentranceHack {
 }
 ```
 
-2. Call the `hack` function. If all goes as planned, the target contract should be empties and the hack contract should have selfdestruct.
+2. Call the `hack` function. If all goes as planned, the target contract should be emptied from it's funds and
+   the hack contract should have selfdestructed and sent the balance to your EOA.
 
 ## Suggested mitigation
 
-1. First and foremost, modify `withdraw` function to follow the **checks effects interaction** patttern. In this context,
+- First and foremost, modify `withdraw` function to follow the **checks effects interaction** patttern. It would
+  look something like the following:
 
 ```solidity
 function withdraw(uint _amount) public {
@@ -90,7 +92,7 @@ function withdraw(uint _amount) public {
 }
 ```
 
-2. Implement ReentrancyGuard by OpenZeppelin.
+- Implement ReentrancyGuard by OpenZeppelin.
 
 ## Further reading
 
