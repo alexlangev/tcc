@@ -33,10 +33,10 @@ balances[msg.sender] -= _value;
 
 ## Suggested mitigation
 
-1. If possible, update the Solidity version to at least 0.8.0. Arithmetic underflows and
-   overflows now **revert the transaction by default**.
+- If possible, update the Solidity version to at least 0.8.0. Arithmetic underflows and
+  overflows now **revert the transaction by default**.
 
-2. Use OpenZeppelin’s SafeMath library.
+- Use OpenZeppelin’s SafeMath library.
 
 ## Further reading
 
