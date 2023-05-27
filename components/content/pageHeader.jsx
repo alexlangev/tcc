@@ -56,7 +56,7 @@ const Wrapper = styled.div`
   align-items: center;
   background-color: ${COLORS.secBg};
   border-radius: 1.5rem;
-  padding: 16px 32px;
+  padding: 16px 32px 32px 32px;
 `;
 
 const BreadCrumbs = styled.ol`
