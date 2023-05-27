@@ -27,7 +27,7 @@ receive() external payable {
 
 ## Exploit
 
-1. Call `contribute` alongside a value of at least 1 Wei. this will make the _balance of your address positive_.
+1. Call `contribute` alongside a value of at least 1 Wei. This will make the _balance of your address positive_.
 2. Send at least 1 Wei to the contract address. The `receive` function will then execute. Since the _balance of your address is greater than 0_,
    the `require` condition is met. **You are now the owner of the contract**.
 3. Call `withdraw` to **steal all of the funds**.

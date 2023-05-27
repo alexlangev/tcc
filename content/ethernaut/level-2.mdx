@@ -14,9 +14,9 @@ imgSrc: /images/ethernaut/ethernaut2.svg
 
 ### Old syntax of declaring a constructor
 
-The contract uses Solidity version 0.6.0 which enabled you to create a constructor function simply by giving it
-the same name as the contract. This is dangerous because constructors usually handle critical behavior. In this
-case, the contract is named `Fallout` but the function supposed to be the constructor is named `Fal1out`.
+In Solidity version 0.6.0 you could create a `constructor` function by creating a _public function with the same name as the
+contract_. This wasn't the best idea since having **a single typo** would result in creating a **public function that handles
+critical behavior**. In this level, the contract is named `Fallout` but the function supposed to be the `constructor` is named `Fal1out`.
 
 ```solidity
 function Fal1out() public payable {
@@ -29,16 +29,16 @@ function Fal1out() public payable {
 }
 ```
 
-The function Fal1out is therefore a public function that gives the ownership to the caller.
+The function `Fal1out` is therefore a **public function that gives the ownership to the** `msg.sender`.
 
 ## Exploit
 
-1. Call the `Fal1out` function.
+1. Call the `Fal1out` function. This will **transfer the ownership to you**.
 
 ## Suggested mitigation
 
 1. Fix the typo to `Fallout`.
-2. If possible, update the Solidity version to at least 0.8.0 and use the constructor keyword instead like
+2. If possible, update the Solidity version to at least 0.8.0 and use the `constructor` keyword instead, like
    the following:
 
 ```solidity

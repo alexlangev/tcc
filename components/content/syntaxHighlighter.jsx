@@ -54,6 +54,7 @@ const CodeBlockContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  margin-bottom: 16px;
 `;
 
 const PreBlock = styled.pre`
