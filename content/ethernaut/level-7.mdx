@@ -3,22 +3,22 @@ title: Level 7 - Force
 slug: level-7
 published: 05-17-2023
 lastEdited:
+imgSrc: /images/ethernaut/ethernaut7.svg
 ---
 
 ## Objectives
 
-1. Make the Force contract have a balance greater than 0.
+1. Send Ether to the Force contract.
 
 ## Vulnerabilities
 
 ### Expecting that a contract can't hold any ether
 
-A contract that doesn't have a payable fallback function doesn't prevent that contract to have
-a positive balance.
+A contract with no `payable` `fallback` function can still receive Ether.
 
 ## Exploit
 
-1. Write and deploy a simple hack contact like the following:
+1. Write and deploy a simple hack contract like the following ones:
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -44,7 +44,7 @@ contract ForceHack {
 
 ## Suggested mitigation
 
-1. Simply never rely on the contract having a 0 balance.
+- Read the contract's balance directly instead of assuming that its balance.
 
 ## Further reading
 

@@ -3,6 +3,7 @@ title: Level 9 - King
 slug: level-9
 published: 05-17-2023
 lastEdited:
+imgSrc: /images/ethernaut/ethernaut9.svg
 ---
 
 ## Objectives
@@ -24,8 +25,8 @@ receive() external payable {
 }
 ```
 
-As it is implemented, the game breaks if that previous king can't receive eth. For this exploit, we make the king
-a contract that reverts everytime it receivers eth
+As it is implemented, the game **breaks if that previous king can't receive eth**. For example, if a contract's `receive`
+function automatically `revert` the transaction.
 
 ```solidity
 receive() external payable {
@@ -66,7 +67,8 @@ contract KingHack {
 
 ## Suggested mitigation
 
-1. Replace `transfer` by `call` which
+- Replace `transfer` by `call`. This way, you can listen to the success of the transaction and add some logic
+  if it fails.
 
 ```solidity
 receive() external payable {
