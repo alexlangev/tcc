@@ -3,23 +3,25 @@ title: Level 3 - Coin Flip
 slug: level-3
 published: 05-15-2023
 lastEdited:
+imgSrc: /images/ethernaut/ethernaut3.svg
 ---
 
 ## Objectives
 
-1. Guess correctly 10 coin flips in a row.
+1. Correctly guess 10 coin flips in a row.
 
 ## Vulnerabilities
 
 ### Block data is a bad source of randomness.
 
-Relying on `block.timestamp`, now or `blockhash` is a bad source of randomness that can be exploited.
-In here, the way to determine the correct answer of the flip can be used by an attacker to "guess"
-the correct result before calling the `flip` function.
+Relying on `block.timestamp`, or `blockhash` is a **bad source of randomness that can be exploited**.
+
+In this contract, the logic behind determining the result is available for anyone to use in a hack contract. Thus
+anyone can _determine the correct answer_ at the same time as calling the `flip` function.
 
 ## Exploit
 
-1. Write and deploy an attack contract similar to the following one:
+1. Write and deploy a hack contract similar to the following one:
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -54,7 +56,7 @@ contract CoinFlipHack {
 
 ## Suggested mitigation
 
-1. Use an oracle link Chainlink for a safer source of randomness
+- Use an oracle like _Chainlink_ for a safer source of randomness.
 
 ## Further reading
 

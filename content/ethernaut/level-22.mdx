@@ -1,0 +1,37 @@
+---
+title: Level 22 - DEX
+slug: level-22
+published: 05-22-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut22.svg
+---
+
+## Objectives
+
+1. Using **price manipulation**, steal all of one of the two **ERC20** tokens.
+
+## Vulnerabilities
+
+### Bad swap price formula
+
+The `swap` price formula is sensitive to the total quantity of tokens held by the contract. Especially since the total
+quantity of tokens is so low,
+
+## Exploit
+
+1. `approve` the transaction of 10 token 1 by the contract.
+2. `swap` 10 token 1 for 10 token 2 (Your balance will then be 0 token 1 and 20 tokens 2)
+3. Do the same as in steps 1 and 2 but the other way around and with your new balance which is 20. (You will then have
+   24 token 1 and 0 token 2).
+4. Repeat this process until you have emptied the balance of one of the tokens. I ended up with 110 of token A and 20 of token B.
+
+## Suggested mitigation
+
+1. Drastically increasing the token pool would help mitigate this somewhat.
+2. Finding a better swap price formula to mitigate manipulation risks.
+3. Use an oracle like Chainlink to get the swap price
+
+## Further reading
+
+- ERC20 token implementation <ExternalLink href={"https://solidity-by-example.org/app/erc20/"} />
+- Using Data Feeds on EVM Chains by Chainlink <ExternalLink href={"https://docs.chain.link/data-feeds/using-data-feeds"} />

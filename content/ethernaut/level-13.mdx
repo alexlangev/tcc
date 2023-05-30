@@ -1,0 +1,53 @@
+---
+title: Level 13 - Gatekeeper One
+slug: level-13
+published: 05-26-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut13.svg
+---
+
+## Objectives
+
+1. Get past the three `require` function modifiers and register as an entrant.
+
+## Vulnerabilities
+
+N/A, It's a technical skill test.
+
+## Exploit
+
+1. Using a contract to interact with the `GatekeeperOne` contract will satisfy the first `require` condition
+   since `tx.origin` and `msg.sender` will be different.
+
+2. The key is based on `tx.origin`. You will need to do multiple casts in a row and rely on some bit shifting to find it:
+
+```solidity
+uint64 preKey = uint64(1 << 62) + uint64(uint16(uint160(tx.origin)));
+bytes8 key = bytes8(k64);
+```
+
+3. Finding the correct gas amount is quite tricky. It will vary based on which compiler version you are using among other things. Testing
+   all possible gas amounts using foundry until it works is a good way to do it.
+
+```solidity
+function test() public {
+    for (uint256 i = 100; i < 8191; i++) {
+        try hack.enter(address(target), i) {
+            console.log("gas", i);
+            return;
+        } catch {}
+    }
+    revert("all failed");
+}
+```
+
+4. Once you have the correct gas amount, call `enter` with with gas. I ended up needing `256 + 3 * 8191` gas. I tried with `256 + 2 * 8191` and
+   `256 + 8191` but it didn't work for some reason. It might be related to the amount of gas needed to complete the rest of the transaction.
+
+## Suggested mitigation
+
+N/A, It's a technical skill test.
+
+## Further reading
+
+- SWC-115 - SWC - Authorization through tx.origin <ExternalLink href={"https://swcregistry.io/docs/SWC-115"} />

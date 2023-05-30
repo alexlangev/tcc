@@ -3,18 +3,19 @@ title: Level 11 - Elevator
 slug: level-11
 published: 05-17-2023
 lastEdited:
+imgSrc: /images/ethernaut/ethernaut11.svg
 ---
 
 ## Objectives
 
-1. Make the elevator go to the top floor. (Give the `floor` variable the same value as the `top` variable)
+1. Make the elevator go to the top floor. In other words, the top variable should become `true`.
 
 ## Vulnerabilities
 
 ### Interface function not using pure or view
 
-Functions in interfaces that are not `pure` or `view` can be used to modify state in an unintended way. In this level,
-we use this to make the function `isLastFloor` return different values based on some state.
+Functions in interfaces that are not `pure` or `view` can be used to _modify state in an unintended way_. In this level,
+we will make the function `isLastFloor` return different values based on some state.
 
 ## Exploit
 
@@ -49,11 +50,11 @@ contract ElevatorHack is Building  {
 }
 ```
 
-2. Call the `attack` function with and uint as argument to reach the top floor.
+2. Call the `attack` function with and `uint` as argument to reach the top floor.
 
 ## Suggested mitigation
 
-1. Add the `view` modifier to the `isLastFloor` interface function.
+- Add the `view` modifier to the `isLastFloor` interface function.
 
 ## Further reading
 

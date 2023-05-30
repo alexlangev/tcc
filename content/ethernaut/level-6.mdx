@@ -3,6 +3,7 @@ title: Level 6 - Delegation
 slug: level-6
 published: 05-16-2023
 lastEdited:
+imgSrc: /images/ethernaut/ethernaut6.svg
 ---
 
 ## Objectives
@@ -13,22 +14,24 @@ lastEdited:
 
 ### Delegate call
 
-You can use a `delegatecall` to an address to execute logic from the address in the context of the
-caller's state.
+Calling into a contract with `delegatecall` gives full control over the the calling contract's storage values and balance. _Calling
+into untrusted contracts is very dangerous._
 
 ## Exploit
 
-1. Evaluate the function signature of `pwn()`. I used `web3.eth.abi.encodeFunctionSignature("pwn()")`
-   directly in console on ethernaut's website.
+1. Evaluate the function signature of `pwn()`. I used the following directly in the console.
 
-2. Call the Delegation contract with `pwn`'s function signature as data. Remix's interface works well
-   for this.
+```js
+const signature = web3.eth.abi.encodeFunctionSignature("pwn()");
+```
+
+2. Call the Delegation contract with `pwn`'s function signature as data. Remix's interface works well for this.
 
 ## Suggested mitigation
 
-1. Remove the body from the `fallback` function since it does nothing except creating a vulnerability.
+- Remove the body from the `fallback` function.
 
 ## Further reading
 
-- SWC-112 - Delegatecall to untrusted callee <ExternalLink href={"https://swcregistry.io/docs/SWC-112"} />
+- SWC-112 - Delegatecall to untrusted callee <ExternalLink href={" "} />
 - Parity wallet hack <ExternalLink href={"https://blog.openzeppelin.com/on-the-parity-wallet-multisig-hack-405a8c12e8f7/"} />

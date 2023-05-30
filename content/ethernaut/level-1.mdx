@@ -3,6 +3,7 @@ title: Level 1 - Fallback
 slug: level-1
 published: 05-15-2023
 lastEdited:
+imgSrc: /images/ethernaut/ethernaut1.svg
 ---
 
 ## Objectives
@@ -14,9 +15,8 @@ lastEdited:
 
 ### Flawed access control
 
-A transfer of ownership is present in the `receive` function. This is dangerous since `receive` is a **public
-function**. The `require` statement condition is also not very strict which open the door to anyone to become the
-owner.
+`receive` is a public function that transfers the ownership to `msg.sender`. The condition of `require` is also not very strict.
+This **opens the door for anyone to become the owner**.
 
 ```solidity
 receive() external payable {
@@ -27,18 +27,17 @@ receive() external payable {
 
 ## Exploit
 
-1. Call `contribute` alongside a value of at least 1 wei. The balance of your address is now positive.
-2. Send at least 1 wei to the contract address. This will call the `receive` function. Since the balance
-   of your address is greater than 0, the require statement condition is repected and the body of the function
-   will execute and the ownership will be tranfered to your address.
-3. Call `withdraw` to steal all of the funds.
+1. Call `contribute` alongside a value of at least 1 Wei. This will make the _balance of your address positive_.
+2. Send at least 1 Wei to the contract address. The `receive` function will then execute. Since the _balance of your address is greater than 0_,
+   the `require` condition is met. **You are now the owner of the contract**.
+3. Call `withdraw` to **steal all of the funds**.
 
 ## Suggested mitigation
 
-1. Move the ownership assignment into a `onlyOwner` function.
-2. For bigger projects, using the `Ownable` library by OpenZeppelin.
+- Move the ownership assignment behavior into a function with a `onlyOwner` modifier.
+- For bigger projects, use the `Ownable` library by OpenZeppelin.
 
 ## Further reading
 
-- Ownership library from OpenZeppelin <ExternalLink href={"https://docs.openzeppelin.com/contracts/2.x/api/ownership"} />
+- **Ownership** by OpenZeppelin <ExternalLink href={"https://docs.openzeppelin.com/contracts/2.x/api/ownership"} />
 - A short blog post on ownership exploits <ExternalLink href={"https://blog.finxter.com/smart-contract-security-series-part-1-ownership-exploit/"} />

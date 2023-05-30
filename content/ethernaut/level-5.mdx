@@ -3,35 +3,42 @@ title: Level 5 - Token
 slug: level-5
 published: 05-16-2023
 lastEdited:
+imgSrc: /images/ethernaut/ethernaut5.svg
 ---
 
 ## Objectives
 
-1. Obtain more tokens.
+1. Obtain more tokens than you start with.
 
 ## Vulnerabilities
 
 ### Integer overflow and underflow
 
-Before Solidity 0.8.0, integer overflow and underflow did not revert the transaction.
+Before Solidity 0.8.0, arithmetic **overflow** and **underflow** did not _revert the transaction_.
 
 ## Exploit
 
-1. Call the `transfer` function with a value greater than your current amount of 20 tokens.
+1. Call the `transfer` function with your EOA and a token amount _greater_ than your current amount of 20 tokens. The require condition is satisfied
+   since the uint will **underflow**.
 
-The `require` condition of `balances[msg.sender] - _value >= 0` is respected since an integer
-undeflow is triggered and `balances[msg.sender] - _value` is a very big positive number.
+```solidity
+require(balances[msg.sender] - _value >= 0);
+```
 
-Then `balances[msg.sender] -= _value;` will change your balance to that very big number.
+Your balance will then also **underflow** to a _greater quantity than you started with_.
+
+```solidity
+balances[msg.sender] -= _value;
+```
 
 ## Suggested mitigation
 
-1. If possible, update the Solidity version to at least 0.8.0. Since that version, integer undeflows and
-   overflows revert the transaction by default.
+- If possible, update the Solidity version to at least 0.8.0. Arithmetic underflows and
+  overflows now **revert the transaction by default**.
 
-2. Use OpenZeppelin’s SafeMath library.
+- Use OpenZeppelin’s SafeMath library.
 
 ## Further reading
 
 - SWC-101 - Integer Overflow and Underflow <ExternalLink href={"https://swcregistry.io/docs/SWC-101"} />
-- The SafeMath library by OpenZeppelin <ExternalLink href={"https://docs.openzeppelin.com/contracts/2.x/api/math"} />
+- The **SafeMath** by OpenZeppelin <ExternalLink href={"https://docs.openzeppelin.com/contracts/2.x/api/math"} />
