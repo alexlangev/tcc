@@ -14,7 +14,7 @@ imgSrc: /images/ethernaut/ethernaut20.svg
 
 ### Reentrancy
 
-The withdraw function is vulnerable to reentrancy attacks. A timelock logic seems to be started
+The `withdraw` function is vulnerable to **reentrancy** attacks. A **timelock** logic seems to be started
 but not implemented completely. We can exploit this fact by making a _hack_ contract become a
 withdraw partner.
 
@@ -49,11 +49,12 @@ contract DenialHack {
 
 2. Call `setWithdrawPartner` with the hacking contract's address as argument.
 
-3. When the owner call withdraw, he will not receive any of it's eth.
+3. When the owner call `withdraw`, he will not receive any of it's eth.
 
 ## Suggested mitigation
 
-1. Completing the timelock logic to one withdraw per hour, per day or whatever else increment of time would prevent this issue from happening.
+1. Completing the timelock logic to one `withdraw` per hour, per day or whatever else increment of time would prevent this issue
+   from happening.
 
 ## Further reading
 

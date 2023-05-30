@@ -14,8 +14,8 @@ imgSrc: /images/ethernaut/ethernaut21.svg
 
 ### Interface functions
 
-Interface functions that have the `view` modifier can still be used to return different values based on another a contract's state. Indeed,
-view functions can still read state and therefore can use that fact to have conditionnals.
+`Interface` functions that have the `view` modifier can still be used to return different values based on another a contract's state.
+Indeed, view functions can still read state and therefore can use that fact to have conditionnals.
 
 ## Exploit
 
@@ -46,10 +46,7 @@ contract ShopHack is Buyer {
 
 2. Call the `Hazaah`function to buy the item at a lower price than asked.
 
-## Suggested mitigation
-
-1. Not sure without changing more.
-
 ## Further reading
 
-- View functions <ExternalLink href={"https://docs.soliditylang.org/en/develop/contracts.html#view-functions"} />
+- Documentation of `view` functions <ExternalLink href={"https://docs.soliditylang.org/en/develop/contracts.html#view-functions"} />
+- Example of simple `view` and `pure` functions <ExternalLink href={"https://solidity-by-example.org/view-and-pure-functions/"} />

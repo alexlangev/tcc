@@ -1,0 +1,78 @@
+---
+title: Level 18 - Magic Number
+slug: level-18
+published: 05-29-2023dddddddd
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut18.svg
+---
+
+## Objectives
+
+1. In less than 10 Opcodes, write a contract that returns 42 when you call `whatIsTheMeaningOfLife`.
+
+## Solution
+
+As explained in the beginning of <a target="\_blank" rel="noopener noreferrer" hre="https://blog.openzeppelin.com/deconstructing-a-solidity-contract-part-ii-creation-vs-runtime-6b9d60ecb44c">this article</a>,
+we will write our bytecode in **two sections**.
+
+The first section is the **initialization** part of the code. This code is only _executed once during the transaction that
+creates the contract_. From what I understand, this is where the constructor logic is executed, which sets the initial states.
+
+The second section is the **runtime** part of the code. This is the actual code that is stored at the contract address onchain.
+It's what is _executed every time a function of the contract is called_.
+
+### Opcodes
+
+Let's go over each **opcode** that we will use.
+
+- `PUSH1` pushes a 1-byte value onto the stack.
+  the second one is the value to be stored. It then writes the 32-byte balue into memory at the specified
+  starting address.
+- `RETURN` returns from this contract call.
+- `CODECOPY` copy executing contract's bytecode. It takes three arguments, the destination memory, the
+  source in th e code frmo where to start the copy and the number to copy.
+- `MSTORE` writes a uint256 to memory. It take two arguments, the first is the starting memory address and
+
+### Initialization
+
+1. `PUSH1` `0a`: Push the size of the runtime code `0x0a` onto the stack.
+2. `PUSH1` `0c`: Push the position where the runtime code starts `0x0c` onto the stack.
+3. `PUSH1` `00`: Push the memory location where to copy the runtime code `0x00` onto the stack.
+4. `CODECOPY`: CODECOPY opcode copies the runtime code into memory.
+5. `PUSH1` `0a`: Push the size of the runtime code `0x0a` onto the stack again.
+6. `PUSH1` `00`: Push the memory location of the runtime code `0x00` onto the stack.
+7. `RETURN`: RETURN the runtime code from memory.
+
+The above code is tranlated to `600a600c600039600a6000f3` in opcodes.
+
+### Runtime
+
+1. `PUSH1` `2a`: Push the `0x2a` on top of the stack.
+2. `PUSH1` `50`: Push `0x50` on top of the stack.
+3. `MSTORE`: Store value `0x2a` at position `0x50` in memory.
+4. `PUSH1` `20`: Push `0x20` on top of the stack.
+5. `PUSH1` `50`: Push `0x50` on top of the stack.
+6. `RETURN`: Return `0x42` of size 20.
+
+The above code is tranlated to `602a60505260206050f3` in opcodes.
+
+### Tying it all together
+
+Concatenating the **initialization** bytecode followed by the **runtime** bytecode gives the following bytecode:
+`600a600c600039600a6000f3602a60505260206050f3`.
+
+We can deploy the contract using the web3 libraby directly in the console.
+
+```javascript
+const code = "600a600c600039600a6000f3602a60505260206050f3";
+const tx = await web3.eth.sendTransaction({ from: player, data: code });
+await contract.setSolver(tx.contractAddress);
+```
+
+## Further reading
+
+- A playground to visualize what the heck you are doing <ExternalLink href={"https://www.evm.codes/playground?fork=shanghai"} />
+- List of the EVM Opcodes <ExternalLink href={"https://ethervm.io/"} />
+- OpenZeppelin article on EVM Bytecode part 1 <ExternalLink href={"https://blog.openzeppelin.com/deconstructing-a-solidity-contract-part-i-introduction-832efd2d7737"} />
+- OpenZeppelin article on EVM Bytecode part 2 <ExternalLink href={"https://blog.openzeppelin.com/deconstructing-a-solidity-contract-part-ii-creation-vs-runtime-6b9d60ecb44c"} />
+- A good walkthrough of this level <ExternalLink href={"https://dev.to/nvn/ethernaut-hacks-level-18-magic-number-27ep"} />

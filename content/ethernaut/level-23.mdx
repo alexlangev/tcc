@@ -12,12 +12,12 @@ imgSrc: /images/ethernaut/ethernaut23.svg
 
 ### Swap open to any ERC20 tokens
 
-The `swap` function is available to any ERC20 tokens. It is therefore easy to create yout own ERC20 and some to your EOA
+The `swap` function is available to any **ERC20** tokens. It is therefore easy to create yout own **ERC20** and some to your EOA
 and some to the DEX2 contract. With this you can swap your worthless tokens for the real ones.
 
 ## Exploit
 
-1. Write and deploy a new ERC20 token. Given mint a small amount to the DEX2 contract and a big amount to yourself.
+1. Write and deploy a new **ERC20** token. Given mint a small amount to the DEX2 contract and a big amount to yourself.
    You can use this hack contract:
 
 ```solidity
@@ -34,9 +34,9 @@ contract Hacktoken is ERC20 {
 }
 ```
 
-2. Approve the amount of Hack tokens your need to transfer to get 100 token 1.
+2. `approve` the amount of Hack tokens your need to `transfer` to get 100 tokens 1.
 
-3. Swap that amount to steal all of token 1.
+3. `swap` that amount to steal all of token 1.
 
 4. Repeat step 2 and 3 for token 2.
 
@@ -49,3 +49,6 @@ require((from == token1 && to == token2) || (from == token2 && to == token1), "I
 ```
 
 ## Further reading
+
+- ERC20 token implementation <ExternalLink href={"https://solidity-by-example.org/app/erc20/"} />
+- Using Data Feeds on EVM Chains by Chainlink <ExternalLink href={"https://docs.chain.link/data-feeds/using-data-feeds"} />
