@@ -1,0 +1,63 @@
+---
+title: Level 19 - Alien Codex
+slug: level-19
+published: 05-31-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut19.svg
+---
+
+## Objectives
+
+1. Claim ownership of the contract
+
+## Vulnerabilities
+
+### Storage array arithmetic overflow and underflow
+
+In Solidity prior to 0.7.0, the `length` property of dynamic arrays could be modified. This length can
+**underflow** and **overflow**. We'll utilise this fact in this level.
+
+## Exploit
+
+1. Call `makeContact` to change the value of `contact` from `false` to `true`.
+
+2. Call `retract` to shorten the length of `codex` by one. Since codex is currently uninitialzed, it's length
+   is currently 0 and will **underflow** which causes the length to grow to <InlineMath>{'2^{256}'}</InlineMath>.
+   This is also the total storage capacity of the contract. Therefore the some slots of the array will collide with
+   slots for other variables.
+
+3. Let's find out in which storage slot codex is. Since `_owner` is 20 bytes long and `contact` is byte long, they
+   will share slot 0 of the contract.`codex`is therefore at slot 1. If you know how storage slots for dynamic arrays
+   work, only the length value is in slot 1, the value of`codex[0]`is actually at storage slot`keccak256(1)`. All
+   subsequent values of codex are in `keccak256(1) + 1`, `keccak256(1) + 2` and so on... Using some _modulo arithmetic_ we can
+   determine that to collide with values in slot 0, we need to use `revise` with index `2^256 - keccak256(1)` as parameter.
+
+   ```javascript
+   const x = BigInt(
+     web3.utils.keccak256(web3.eth.abi.encodeParameters(["uint256"], [1]))
+   );
+   const index = BigInt(2 ** 256) - x;
+   ```
+
+4. Before calling `revise`, we need to construct the value that we will give it. Since the slot is 32 bytes in total
+   we will pad our address with 24 zeros.
+
+```javascript
+const content = "0x" + "0".repeat(24) + player.slice(2);
+```
+
+5. Finally let's call `revise` to override slot 0 with out address which will make us the owner.
+
+```javascript
+await contract.revise(index, content);
+```
+
+## Suggested mitigation
+
+1. Upgrade the contract to Solidity version 0.8.0 and up. The **arithmetic underflow** will
+   automatically revert the transaction. Also with Solidity version 0.6 and up, the length property
+   of dynamic array are read-only.
+
+## Further reading
+
+- Article on understanding Ethereum smart contract storage <ExternalLink href={"https://programtheblockchain.com/posts/2018/03/09/understanding-ethereum-smart-contract-storage/"} />
