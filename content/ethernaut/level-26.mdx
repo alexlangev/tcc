@@ -1,0 +1,229 @@
+---
+title: Level 26 - Double Entry Point
+slug: level-26
+published: 06-08-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut26.svg
+---
+
+## Objectives
+
+1. Implement a Forta detection bot to protect.
+
+## Vulnerabilities
+
+## Exploration
+
+Let's take a look at the `DoubleEntryPoint` implementation.
+
+```solidity
+contract DoubleEntryPoint is ERC20("DoubleEntryPointToken", "DET"), DelegateERC20, Ownable {
+    address public cryptoVault;
+    address public player;
+    address public delegatedFrom;
+    Forta public forta;
+
+    constructor(address legacyToken, address vaultAddress, address fortaAddress, address playerAddress) {
+        delegatedFrom = legacyToken;
+        forta = Forta(fortaAddress);
+        player = playerAddress;
+        cryptoVault = vaultAddress;
+        _mint(cryptoVault, 100 ether);
+    }
+
+    modifier onlyDelegateFrom() {
+        require(msg.sender == delegatedFrom, "Not legacy contract");
+        _;
+    }
+
+    modifier fortaNotify() {
+        address detectionBot = address(forta.usersDetectionBots(player));
+
+        // Cache old number of bot alerts
+        uint256 previousValue = forta.botRaisedAlerts(detectionBot);
+
+        // Notify Forta
+        forta.notify(player, msg.data);
+
+        // Continue execution
+        _;
+
+        // Check if alarms have been raised
+        if(forta.botRaisedAlerts(detectionBot) > previousValue) revert("Alert has been triggered, reverting");
+    }
+
+    function delegateTransfer(
+        address to,
+        uint256 value,
+        address origSender
+    ) public override onlyDelegateFrom fortaNotify returns (bool) {
+        _transfer(origSender, to, value);
+        return true;
+    }
+}
+```
+
+Inside the `constructor`, 100 Ether is minted to a `cryptoVault` instance. This means that <InlineMath>{'100 * 10^{18}'}</InlineMath>.
+DET tokens were minted to the `cryptoVault`'s address.
+
+Let's take a look at the `CryptoVault` code.
+
+```solidity
+contract CryptoVault {
+    address public sweptTokensRecipient;
+    IERC20 public underlying;
+
+    constructor(address recipient) {
+        sweptTokensRecipient = recipient;
+    }
+
+    function setUnderlying(address latestToken) public {
+        require(address(underlying) == address(0), "Already set");
+        underlying = IERC20(latestToken);
+    }
+
+    /*
+    ...
+    */
+
+    function sweepToken(IERC20 token) public {
+        require(token != underlying, "Can't transfer underlying token");
+        token.transfer(sweptTokensRecipient, token.balanceOf(address(this)));
+    }
+}
+```
+
+`CryptoVault` has the `sweepToken` function which is used to _sweep up_ all token of a specific token and
+transfer them to a recipient address. This type of function is common. It enables to collect tokens stuck in 
+a contract. `CryptoVault` has an ERC20 token as `underlying`. This token can't be swept by calling `sweepToken` 
+with its address as argument because of the `require` function.
+
+Let's dig a bit deeper. Using the **Remix** interface, we can compile the `DoubleEntryPointToken` contract and use 
+the _at address_ field with the contract address to have access to all functions in the ABI. From there let's click 
+on `cryptoVault` to get the `address`. 
+
+Let's do the same with CryptoVault and its `address`. By clicking on `underlying` we get the `address` of `underlying`.
+Using a _block explorer_ for the testnet, we can see that the `underlying` address is that of a DET token. This was expected.
+
+### The vulnerability
+
+Using Remix, let's now take a look at `delegatedFrom` in the `DoubleEntryPointToken`. It's a `legacyToken` address. Using
+the _at address_ field in Remix we can now interact with the `legacyToken` contract.
+
+```solidity 
+contract LegacyToken is ERC20("LegacyToken", "LGT"), Ownable {
+    DelegateERC20 public delegate;
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
+    }
+
+    function delegateToNewContract(DelegateERC20 newContract) public onlyOwner {
+        delegate = newContract;
+    }
+
+    function transfer(address to, uint256 value) public override returns (bool) {
+        if (address(delegate) == address(0)) {
+            return super.transfer(to, value);
+        } else {
+            return delegate.delegateTransfer(to, value, msg.sender);
+        }
+    }
+}
+```
+
+Looking up the value of `delegate` in a block explorer reveals that it's the DET `address`. Here lies the 
+issue. Calling `transfer` of `LegacyToken` actually calls `delegateTransfer` of `DoubleEntryPointToken`. In
+other words, calling `sweepToken` with the `LGT` would actually cause the `DET` token to be swept!
+
+
+## Implement Forta Bot
+
+1. Write and deploy the following DetectionBot:
+
+```solidity
+contract DetectionBot is IDetectionBot {
+    address private monitoredSource;
+    bytes private monitoredSig;
+
+    constructor(address _monitoredSource, bytes memory _monitoredSig) public {
+        monitoredSource = _monitoredSource;
+        monitoredSig = _monitoredSig;
+    }
+
+    function handleTransaction(address user, bytes calldata msgData) external override {
+        (address to, uint256 value, address origSender) = abi.decode(msgData[4:], (address, uint256, address));
+
+        bytes memory callSig = abi.encodePacked(msgData[0], msgData[1], msgData[2], msgData[3]);
+
+        if (origSender == monitoredSource && keccak256(callSig) == keccak256(monitoredSig)) {
+            IForta(msg.sender).raiseAlert(user);
+        }
+    }
+}
+```
+
+`handleTransaction` of `DetectionBot` takes only two parameters, an `address` and a bytes representing
+the `calldata`. We want to raise the alarm when these two conditions are met:
+
+- The **sender** calling `DoubleEntryPoint.delegateTransfer` is `CryptoVault`. 
+
+- The **signature** of the calling function is equal to `delegateTransfer` signature.
+
+Let's write and deploy the following contract
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+interface IDetectionBot {
+    function handleTransaction(address user, bytes calldata msgData) external;
+}
+
+interface IForta {
+    function setDetectionBot(address detectionBotAddress) external;
+    function notify(address user, bytes calldata msgData) external;
+    function raiseAlert(address user) external;
+}
+
+contract DetectionBot is IDetectionBot {
+    address private monitoredSource;
+    bytes private monitoredSig;
+
+    constructor(address _monitoredSource, bytes memory _monitoredSig) {
+        monitoredSource = _monitoredSource;
+        monitoredSig = _monitoredSig;
+    }
+
+    function handleTransaction(address user, bytes calldata msgData) external override {
+        (address to, uint256 value, address origSender) = abi.decode(msgData[4:], (address, uint256, address));
+
+        bytes memory callSig = abi.encodePacked(msgData[0], msgData[1], msgData[2], msgData[3]);
+
+        if (origSender == monitoredSource && keccak256(callSig) == keccak256(monitoredSig)) {
+            IForta(msg.sender).raiseAlert(user);
+        }
+    }
+}
+```
+
+To deploy the above contract, we will pass the `CryptoVault` address as `monitoredSource` which we already have.
+`_monitoredSig` is the function signature of "delegateTransfer(address,uint256,address)". We can find this in the console 
+like this:
+
+```javascript
+const functionSignature = web3.utils.keccak256('delegateTransfer(address,uint256,address)');
+const functionSelector = functionSignature.substring(0, 10);
+```
+
+Once our `DetectionBot` published, all that is left is to register it to the `Forta` instance of `DoubleEntryPoint`.
+We can do this using the Remix interface. 
+
+And that's it! Congratulations if you made it this far!
+
+## Further reading
+
+- Forta's website <ExternalLink href={"https://forta.org/"} />
+- Docs about ABIs <ExternalLink href={"https://docs.soliditylang.org/en/v0.8.15/abi-spec.html#abi"} />
+
+
