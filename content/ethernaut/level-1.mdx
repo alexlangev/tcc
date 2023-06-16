@@ -11,12 +11,23 @@ imgSrc: /images/ethernaut/ethernaut1.svg
 1. Claim ownership of the contract.
 2. Steal all of the funds.
 
-## Vulnerabilities
+## Concepts and Vulnerabilities
+
+### Receive function
+
+In Solidity, contracts can have a `receive` function which is always `external` and
+`payable`. This function gets executed when a contract directly receives Eth without 
+any accompanying `calldata`. In other words, when a contract is sent a transaction 
+without any function calls.
 
 ### Flawed access control
 
-`receive` is a public function that transfers the ownership to `msg.sender`. The condition of `require` is also not very strict.
-This **opens the door for anyone to become the owner**.
+The contract uses a `onlyOwner` function modifier which is a common pattern. That being said,
+an improper implementation of the `onlyOwner` logic can expose critical functions.
+
+In this particular case, the `receive` function which anyone can call assigns `msg.sender` 
+as `owner` if a `require` function is successful. This is exactly what we will use to exploit
+the contract.
 
 ```solidity
 receive() external payable {
@@ -25,17 +36,36 @@ receive() external payable {
 }
 ```
 
-## Exploit
+## Solution
 
-1. Call `contribute` alongside a value of at least 1 Wei. This will make the _balance of your address positive_.
-2. Send at least 1 Wei to the contract address. The `receive` function will then execute. Since the _balance of your address is greater than 0_,
-   the `require` condition is met. **You are now the owner of the contract**.
-3. Call `withdraw` to **steal all of the funds**.
+As mentioned above, we want to exploit the logic inside the `receive` function which assigns a new owner to `msg.sender`.
+For this, we need to satisfy the `require` function. There are two conditions:
+1. `msg.value` > 0 
+2.  `contributions[msg.sender] > 0` is also simple. All we need is to increase the contribution of our EOA to a positive_
+amount.
+
+The first one is simple. Sending any amount of Wei to the contract will satisfy this. On the other hand, the second condition
+requires an extra step. We need to increase the contribution value of our EOA to an amount greater than 0. Let's do exactly this
+by calling `contribute` alonside 1 Wei. (It can be any value between 1Wei and 0.001 Eth)
+
+We can now send 1 Wei to the contract address. Doing this will make your EOA the `owner`. I used the Remix interface to do this 
+but you can also do it directly in the console.
+
+Lastly call `withdraw` to empty all of the contract's funds.
 
 ## Suggested mitigation
 
-- Move the ownership assignment behavior into a function with a `onlyOwner` modifier.
-- For bigger projects, use the `Ownable` library by OpenZeppelin.
+If this was a contract submitted to an audit I would suggest the following:
+
+- Remove the ownership assignment behavior from `receive` and put it into a function with a `onlyOwner` modifier. 
+For example:
+```solidity
+function changeOwner(address _newOwnerAddress) external onlyOwner {
+    require(_newOwnerAddress != address(0), "Can't use the 0 address!");
+    owner = _newOwnerAddress;
+}
+```
+- For bigger projects, using the `Ownable` library by OpenZeppelin would be a safer option.
 
 ## Further reading
 
