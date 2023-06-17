@@ -10,12 +10,16 @@ imgSrc: /images/ethernaut/ethernaut2.svg
 
 1. Claim ownership of the contract.
 
-## Vulnerabilities
+## Concepts and Vulnerabilities
 
 ### Old syntax of declaring a constructor
 
-In Solidity version 0.6.0 you could create a `constructor` function by creating a _public function with the same name as the
-contract_. This wasn't the best idea since having **a single typo** would result in creating a **public function that handles
+In solidity, contract can have a `constructor` function. This function runs only once **at contract deployment**. It is used
+to set up important logic. Amoung other things, it is used to instantiate immutables and very often it is used to 
+set an `owner` of the contract.
+
+In Solidity versions pre 0.7.0, you could create a `constructor` function by creating a `public` function with the _same name as the
+contract_. This wasn't the best idea since having a **single typo** would result in creating a **public function that handles
 critical behavior**. In this level, the contract is named `Fallout` but the function supposed to be the `constructor` is named `Fal1out`.
 
 ```solidity
@@ -29,13 +33,20 @@ function Fal1out() public payable {
 }
 ```
 
-The function `Fal1out` is therefore a **public function that gives the ownership to the** `msg.sender`.
+The function `Fal1out` is therefore a **public function** that can be called by any address. It gives the ownership of the contract
+to the `msg.sender`. We'll use this solve this challenge.
 
-## Exploit
+## Solution
 
-1. Call the `Fal1out` function. This will **transfer the ownership to you**.
+As mentioned above, the contract is supposed to have a `constructor` named `Fallout` but due to a typo, it instead has a public function
+names `Fal1out`.
+
+1. Simply call the `Fal1out` function. This will transfer the ownership to you. I used <a target="\_blank" rel="noopener noreferrer" href="https://remix.ethereum.org/">Remix</a>
+to do this.
 
 ## Suggested mitigation
+
+If this was a contract submitted to an audit I would suggest the following:
 
 - Fix the typo to `Fallout`.
 - If possible, update the Solidity version to at least 0.8.0 and use the `constructor` keyword instead, like
