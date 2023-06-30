@@ -10,14 +10,15 @@ imgSrc: /images/ethernaut/ethernaut3.svg
 
 1. Correctly guess 10 coin flips in a row.
 
-## Vulnerabilities
+## Concepts and Vulnerabilities
 
-### Block data is a bad source of randomness.
+### Bad source of randomness.
 
-Relying on `block.timestamp`, or `blockhash` is a **bad source of randomness that can be exploited**.
+Relying on block information like `block.timestamp`, `block.number` and `blockhash` is a bad source of randomness that 
+**can be exploited** in a multitude of ways.
 
-In this contract, the logic behind determining the result is available for anyone to use in a hack contract. Thus
-anyone can _determine the correct answer_ at the same time as calling the `flip` function.
+In this contract, the result `flip` can be determined as we are calling it the functionw. This will 
+enable us to win every round.
 
 ## Exploit
 
